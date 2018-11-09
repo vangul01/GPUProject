@@ -10,5 +10,5 @@ Execution format:
 Excecution example:
 ./regmatrix 3 4
 
-*Compile with gcc-6.2.0 on courses2*
-module load gcc-6.2.0
+UPDATE THIS: *Compile with gcc-6.2.0 on courses2*
+UPDATE THIS: module load gcc-6.2.0
