@@ -164,3 +164,16 @@ void matIntToFloat(int matA[], int rowA, int colA, float resultMat[], int rowB, 
 		}
 	}
 }
+///////////////////////////////////////////////
+/*
+void yFunction(int matA[], int rowA, int colA, float resultMat[], int rowB, int colB) {
+	for(int i = 0; i < rowA; i++) {
+		for(int j = 0; j < colB; j++) {
+			for(int k = 0; k < colA; k ++ ) {
+				resultMat[index(i,j, colB)] = (float) matA[index(i,j, colA)];
+
+			}
+		}
+	}
+}
+*/
