@@ -46,7 +46,7 @@ void matrixPrint(int mat[], int rowN, int colN) {
 bool inverse(int A[], float inverse[]) { 
 	int det = determinant(A, N); 
 	if (det == 0) { 
-		cout << "Singular matrix, can't find its inverse"; 
+		cout << "Singular matrix, can't find its inverse\n"; 
 		return false; 
 	} 
 
