@@ -15,6 +15,7 @@ make arg for input random file?
 #include <iostream>
 #include <cstdlib> //for random numbers
 #include <ctime> //base rand on computer time for new rand each time
+#include <math.h>
 // #include<bits/stdc++.h> 
 
 using namespace std;
@@ -96,18 +97,18 @@ int main(int argc, char *argv[]) {
 	float resultM[colNum*rowNum];
 	matMultiplFloat(inv, colNum, colNum, XtFloat, colNum, rowNum, resultM);
 
-	cout<<"(X'X)^-1*X' ->"<<endl;
+	cout<<"(X'X)^-1*X' ------------->"<<endl;
 	display(resultM, colNum, rowNum);
 	
 	//cal (X'X)^-1*X'Y
 	float finalResult[colNum];
 	matMultiplFloat(resultM, colNum, rowNum, Y, rowNum, 1, finalResult);
 
-	cout<<"final (X'X)^-1*X'Y ->"<<endl;
+	cout<<"final (X'X)^-1*X'Y ------------->"<<endl;
 	display(finalResult, colNum, 1);
 
 	// FIGURING OUT PREDICTION Y ////////////////////////////////////////////
-	cout <<"These are my B values: "<<endl; 
+	cout <<"\nThese are my B values: "; 
 	//here make Y function...
 	float* B = (float*)malloc(sizeof(float)*colNum);
 	for(int i = 0; i < colNum; i++) {
@@ -118,7 +119,7 @@ int main(int argc, char *argv[]) {
 
 	//create random X values to multiply with the B values to get Y values
 	//Then do the weird formula on Y values
-	cout <<"These are my random X values: "<<endl; 
+	cout <<"These are my random X values: "; 
 	float* newX = (float*)malloc(sizeof(float)*colNum-1);
 	for(int i = 1; i < colNum; i++) {
 		newX[i] = rand()%10;
@@ -127,21 +128,25 @@ int main(int argc, char *argv[]) {
 	cout << endl;
 
 	//now figure out Y by multiplying the Bs with the new random Xs
-	cout <<"This is my predicted Y!: "<<endl; 
 	//float* predictY = (float*)malloc(sizeof(float));
-	float predictY[1] = {0};
+	float predictY = 0;
 	float temp = 0;
 	for (int i=1; i<colNum; i++) {
 		temp += B[i] * newX[i];
-		cout << "My B[" << i << "]: " << B[i] << endl;
-		cout << "My newX[" << i << "]: " << newX[i] << endl;
-		cout << "my temp: " << temp <<endl;
 	}
-	//Y=b0+b1x1+b2x2
-	predictY[0] = B[0] + temp; 
-	cout << "My prediction! " << predictY[0] << endl;
+	//Y=b0+b1X1+b2X2+....bNXN
+	predictY = B[0] + temp; 
+	cout << "b0 + b1X1 + b2X2 + bNXN ----> Y = " << predictY << endl;
 	//Now turn this Y into ln[Y/(1−Y)]=a+bX... ?
-
+	predictY = predictY/(1-predictY); //will give a+bX+...
+	cout << "Y/(1−Y) = " << predictY << endl;
+	
+	if (predictY >= 0) {
+		predictY = log(predictY);
+		cout << "ln[Y/(1−Y)] = " << predictY << endl;
+	} else {
+		cout << "Error: Y/(1−Y) cannot be negative, 0 or 1.\n";
+	}
 
 	return 0;
 }
