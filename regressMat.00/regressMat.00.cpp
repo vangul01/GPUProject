@@ -1,9 +1,9 @@
 /* 
 To do: 
-			make arrays that need to be dynamic
-			make function that solves prediction Y with the B outputs
-ln[Y/(1−Y)]=a+bX 
-			make another array for random values X
+		make arrays that need to be dynamic
+		make function that solves prediction Y with the B outputs
+		ln[Y/(1−Y)]=a+bX 
+		make another array for random values X
 make arg for input random file?
 */
 
