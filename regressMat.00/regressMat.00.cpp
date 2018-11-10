@@ -1,9 +1,9 @@
 /* 
 To do: 
-make arrays that need to be dynamic
-make function that solves prediction Y with the B outputs
-	 ln[Y/(1−Y)]=a+bX 
-make another array for random values X
+			make arrays that need to be dynamic
+			make function that solves prediction Y with the B outputs
+ln[Y/(1−Y)]=a+bX 
+			make another array for random values X
 make arg for input random file?
 */
 
@@ -13,16 +13,18 @@ make arg for input random file?
 #include <string.h>
 #include <time.h> 
 #include <iostream>
+#include <cstdlib> //for random numbers
+#include <ctime> //base rand on computer time for new rand each time
 // #include<bits/stdc++.h> 
 
 using namespace std;
 #define index(i, j, colNum)  ((i)*(colNum)) + (j)
 
-#include "0header.h"	//why do we need?
+#include "0header.h"	
 #include "0matrixCalculation.cpp"
 
 int main(int argc, char *argv[]) {
-	int N;
+	srand(time(NULL)); //use rand()%10 for random bt 0-9
 
 	if (argc != 3) {
 		cout << "Improper number of arguments. \nArg 1: Number of Rows\nArg 2: Number of Columns" << endl; 
@@ -30,37 +32,44 @@ int main(int argc, char *argv[]) {
 	}
 
 	//error check this
-	string input1 = argv[(argc - 2)];
-	string input2 = argv[(argc - 1)];
-	int rowNum = stoi(input1);
-	int colNum = stoi(input2);
+	string rowInput = argv[(argc - 2)];
+	string colInput = argv[(argc - 1)];
+	int rowNum = stoi(rowInput);
+	int colNum = stoi(colInput);
 
-
-	cout << rowNum << " " << colNum << endl;
-
-	// int X[rowNum*colNum] = {2,3,-2, 7,2,5, 1,7,9, 7,8,9};
-	// int X[rowNum*colNum] = {1,3,-2, 1,2,5, 1,7,9, 1,8,9};
-/*	int* X = (int*)malloc(sizeof(int)*rowNum*colNum);  
+/*	if(rowInput.is_integer) {
+	 	//((int)stoi(rowInput) && (int)stoi(colInput)) 
+		//rowNum = stoi(rowInput);
+		//colNum = stoi(colInput);
+		cout << "Woo! Check passes :D" << endl;
+	} else {
+		cout << "Error: Make sure Row and Column arguments are integers." << endl;
+	}
+*/	
+	cout <<"Rows: " << rowNum << " Columns: " << colNum << endl;
+	
+	//populate X with random values between 0-9 
+	int* X = (int*)malloc(sizeof(int)*rowNum*colNum); 
 	for(int i = 0; i < rowNum; i++) {
 		for(int j = 0; j < colNum; j++) {
-			X[i] = j;	
-			cout << &X << " " ;
+			X[index(i, j, colNum)] = rand()%10;	
 		}
 	}
-*/
 
+	//populate Y with random 0 or 1 value
+	float* Y = (float*)malloc(sizeof(float)*rowNum); 
+	for(int i = 0; i < rowNum; i++) {
+		Y[i] = rand()%2;
+	}
 
-	int X[1000000] = {1,3,-2, 1,2,5, 1,7,9, 1,8,9};
-	int transposeX[colNum*rowNum];
-
-	float Y[1000] = {3.1, 2.2, -7.1, 5.1}; //make this some random num
-	// float Y[rowNum] = {3.1, 2.2, -7.1, 5.1};
-
+	//transpose X on X' and create new matrix
+	int* transposeX = (int*)malloc(sizeof(int)*rowNum*colNum); 
 	for(int i = 0; i < rowNum; i++) {
 		for(int j = 0; j < colNum; j++) {
 			transposeX[index(j,i, rowNum)] = X[index(i,j, colNum)];	
 		}
 	}
+	cout << "\n";
 
 	N = colNum;
 	int tranXmulxMat[colNum*colNum];
@@ -96,6 +105,43 @@ int main(int argc, char *argv[]) {
 
 	cout<<"final (X'X)^-1*X'Y ->"<<endl;
 	display(finalResult, colNum, 1);
+
+	// FIGURING OUT PREDICTION Y ////////////////////////////////////////////
+	cout <<"These are my B values: "<<endl; 
+	//here make Y function...
+	float* B = (float*)malloc(sizeof(float)*colNum);
+	for(int i = 0; i < colNum; i++) {
+		B[i] = finalResult[i];
+		cout << B[i] << " ";
+	}
+	cout << endl;
+
+	//create random X values to multiply with the B values to get Y values
+	//Then do the weird formula on Y values
+	cout <<"These are my random X values: "<<endl; 
+	float* newX = (float*)malloc(sizeof(float)*colNum-1);
+	for(int i = 1; i < colNum; i++) {
+		newX[i] = rand()%10;
+		cout << newX[i] << " ";
+	}
+	cout << endl;
+
+	//now figure out Y by multiplying the Bs with the new random Xs
+	cout <<"This is my predicted Y!: "<<endl; 
+	//float* predictY = (float*)malloc(sizeof(float));
+	float predictY[1] = {0};
+	float temp = 0;
+	for (int i=1; i<colNum; i++) {
+		temp += B[i] * newX[i];
+		cout << "My B[" << i << "]: " << B[i] << endl;
+		cout << "My newX[" << i << "]: " << newX[i] << endl;
+		cout << "my temp: " << temp <<endl;
+	}
+	//Y=b0+b1x1+b2x2
+	predictY[0] = B[0] + temp; 
+	cout << "My prediction! " << predictY[0] << endl;
+	//Now turn this Y into ln[Y/(1−Y)]=a+bX... ?
+
 
 	return 0;
 }
