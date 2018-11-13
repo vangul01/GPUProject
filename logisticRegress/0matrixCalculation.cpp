@@ -1,7 +1,7 @@
 bool inverse(int A[], float inverse[]);
-int determinant(int A[], int n);
-void getCofactor(int A[], int temp[], int p, int q, int n);
-void adjoint(int A[],int adj[]);
+float determinant(float A[], int n);
+void getCofactor(float A[], float temp[], int p, int q, int n);
+void adjoint(float A[], float adj[]);
 
 template<class T> 
 void display(T A[], int rowN, int colN) { 
@@ -21,36 +21,17 @@ void matrixPrint(int mat[], int rowN, int colN) {
 	}
 }
 
-// int main() { 
-// 	N = 4;
-// 	int A[N*N] = {5,-2,2,7, 1,0,0,3, -3,1,5,0, 3,-1,-9,4 };
-// 	// int A[N*N] = {5,-2,2, 1,5,7, -3,1,5, 3,4,-9};
-
-// 	int adj[N*N]; // To store adjoint of A[][] 
-// 	float inv[N*N]; // To store inverse of A[][] 
-
-// 	cout << "Input matrix is :\n"; 
-// 	display(A); 
-
-// 	// cout << "\nThe Adjoint is :\n"; 
-// 	// // adjoint(A, adj); 
-// 	// // display(adj); 
-
-// 	// cout << "\nThe Inverse is :\n"; 
-// 	if (inverse(A, inv)) 
-// 		display(inv); 
-
-// 	return 0; 
-// } 
 ////////////////////////////////////////////
-bool inverse(int A[], float inverse[]) { 
-	int det = determinant(A, N); 
-	if (det == 0) { 
-		cout << "Singular matrix, can't find its inverse\n"; 
+/////////////////////////////////////////////
+bool inverse(float A[], float inverse[]) { 
+	float det = determinant(A, N); 
+
+	if (det == 0.0) { 
+		cout << "Singular matrix, can't find its inverse"; 
 		return false; 
 	} 
 
-	int adj[N*N]; 
+	float adj[N*N]; 
 
 	adjoint(A, adj); 
 
@@ -61,9 +42,9 @@ bool inverse(int A[], float inverse[]) {
 	return true; 
 }  
 ///
-void adjoint(int A[],int adj[]) { 
+void adjoint(float A[], float adj[]) { 
 	int sign = 1; 
-	int temp[N*N]; 
+	float temp[N*N]; 
 
 	for (int i=0; i<N; i++) { 
 		for (int j=0; j<N; j++) { 
@@ -77,17 +58,16 @@ void adjoint(int A[],int adj[]) {
 	} 
 } 
 ////
-int determinant(int A[], int n) {
-	int D = 0; // Initialize result 
+float determinant(float A[], int n) {
+	float D = 0.0; // Initialize result 
 
 	// Base case : if matrix contains single element 
 	if (n == 1) 
 		return A[index(0,0,N)]; 
 
-	// int temp[N][N]; // To store cofactors 
-	int temp[N*N]; // To store cofactors 
+	float temp[N*N]; // To store cofactors 
 
-	int sign = 1; // To store sign multiplier 
+	float sign = 1.0; // To store sign multiplier 
 
 	// Iterate for each element of first row 
 	for (int f = 0; f < n; f++) { 
@@ -101,7 +81,7 @@ int determinant(int A[], int n) {
 	return D; 
 } 
 //////
-void getCofactor(int A[], int temp[], int p, int q, int n) { 
+void getCofactor(float A[], float temp[], int p, int q, int n) { 
 	int i = 0, j = 0; 
 
 	for (int row = 0; row < n; row++) { 
@@ -121,23 +101,6 @@ void getCofactor(int A[], int temp[], int p, int q, int n) {
 	} 
 }
 /////////////////////////////////////////////////////////////
-///////////////////////////////////////////////////////////
-void matMultiplication(int matA[], int rowA, int colA, int matB[], int rowB, int colB, int resultMat[]) {
-	int tempSum;
-
-	for(int i = 0; i < rowA; i++) {
-		for(int j = 0; j < colB; j++) {
-			tempSum = 0;
-			for(int k = 0; k < colA; k ++ ) {
-				tempSum += matA[index(i, k, colA)]*matB[index(k, j, colB)] ;
-				// cout<<"tempSum ->"<<tempSum<<endl;
-			}
-			// tempMat[index(i, j, colB)] = tempSum;
-			resultMat[index(i,j, colB)] = tempSum;
-		}
-	}
-}
-////
 void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, int colB, float resultMat[]) {
 	float tempSum;
 
@@ -154,14 +117,75 @@ void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, i
 	}
 }
 ///////////////////////////////////////////////
-void matIntToFloat(int matA[], int rowA, int colA, float resultMat[], int rowB, int colB) {
-	for(int i = 0; i < rowA; i++) {
-		for(int j = 0; j < colB; j++) {
-			for(int k = 0; k < colA; k ++ ) {
-				resultMat[index(i,j, colB)] = (float) matA[index(i,j, colA)];
+void readFile(float X [], float Y[], int rowNum, int colNum) {
+	char fileName[1000];
+	sprintf(fileName, "%dby%dMat.txt", rowNum, colNum); 
 
+	ifstream file(fileName);
+	string line;
+	int ii = 0;
+	int rowI, colJ;
+	float val;
+	float dataFloatArr[rowNum*colNum];
+	while (std::getline(file, line )) {
+		// cout<<"ii->"<<ii<<" ->"<<  line<<endl;
+		istringstream ss(line);
+		for(int i = 0; i < colNum; i++) {
+			rowI = ii /colNum;
+			colJ = ii % colNum;
+			
+			ss >>val;
+			dataFloatArr[ii] = val;
+
+			if(colJ == 0) {
+				Y[index(rowI, 0, 1)] = val;
+				X[index(rowI, 0, colNum)] = 1.0;
+			} else {
+				X[index(rowI, colJ, colNum)] = val;
 			}
+			
+			ii++;
 		}
-	}
+	} 	
+
+	// display(Y, rowNum, 1);
+	// cout<<"================="<<endl;
+	// display(X, rowNum, colNum);
+
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
