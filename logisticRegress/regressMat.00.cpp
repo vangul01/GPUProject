@@ -3,6 +3,11 @@
 #include <time.h> 
 #include <iostream>
 // #include<bits/stdc++.h> 
+#include <cstdlib>
+#include <math.h>
+#include <fstream>
+#include<sstream>
+#include<string.h>
 
 using namespace std;
 #define index(i, j, colNum)  ((i)*(colNum)) + (j)
@@ -11,15 +16,14 @@ using namespace std;
 #include "0matrixCalculation.cpp"
 
 int main(int argc, char *argv[]) {
-	int colNum = 3;
-	int rowNum = 4;
-	// int X[rowNum*colNum] = {2,3,-2, 7,2,5, 1,7,9, 7,8,9};
-	// int X[rowNum*colNum] = {1,3,-2, 1,2,5, 1,7,9, 1,8,9};
-	float X[1000000] = {1.0,3.3,-2.2, 1.0,2.2,5.5, 1.0,7.7,9.9, 1.0,8.8,9.9};
+	int rowNum = atoi(argv[1]);
+	int colNum = atoi(argv[2]);
+
+	float X[rowNum*colNum];
 	float transposeX[colNum*rowNum];
 
-	float Y[1000] = {3.1, 2.2, -7.1, 5.1};
-	// float Y[rowNum] = {3.1, 2.2, -7.1, 5.1};
+	float Y[rowNum];
+	readFile(X, Y, rowNum, colNum);
 
 	for(int i = 0; i < rowNum; i++) {
 		for(int j = 0; j < colNum; j++) {
@@ -31,9 +35,11 @@ int main(int argc, char *argv[]) {
 	float tranXmulxMat[colNum*colNum];
 	matMultiplFloat(transposeX, colNum, rowNum, X, rowNum, colNum, tranXmulxMat);
 	cout<<"X\'-------->"<<endl;
-	display(transposeX, colNum, rowNum);
+	// display(transposeX, colNum, rowNum);
+
 	cout<<"X ----------->"<<endl;
-	display(X, rowNum, colNum);
+	// display(X, rowNum, colNum);
+	
 	cout<<"X\'X----------->"<<endl;
 	display(tranXmulxMat, colNum, colNum);
 
@@ -46,14 +52,12 @@ int main(int argc, char *argv[]) {
 
 	//cal (X'X)^-1*X'
 	// ------------
-	// float XtFloat[colNum*rowNum];
-	// matIntToFloat(transposeX, colNum, rowNum, XtFloat, colNum, rowNum);
 
 	float resultM[colNum*rowNum];
 	matMultiplFloat(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);
 
 	cout<<"(X'X)^-1*X' ->"<<endl;
-	display(resultM, colNum, rowNum);
+	// display(resultM, colNum, rowNum);
 	
 	//cal (X'X)^-1*X'Y
 	float finalResult[colNum];

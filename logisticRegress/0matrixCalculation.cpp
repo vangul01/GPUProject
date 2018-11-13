@@ -101,7 +101,6 @@ void getCofactor(float A[], float temp[], int p, int q, int n) {
 	} 
 }
 /////////////////////////////////////////////////////////////
-
 void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, int colB, float resultMat[]) {
 	float tempSum;
 
@@ -118,4 +117,75 @@ void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, i
 	}
 }
 ///////////////////////////////////////////////
+void readFile(float X [], float Y[], int rowNum, int colNum) {
+	char fileName[1000];
+	sprintf(fileName, "%dby%dMat.txt", rowNum, colNum); 
+
+	ifstream file(fileName);
+	string line;
+	int ii = 0;
+	int rowI, colJ;
+	float val;
+	float dataFloatArr[rowNum*colNum];
+	while (std::getline(file, line )) {
+		// cout<<"ii->"<<ii<<" ->"<<  line<<endl;
+		istringstream ss(line);
+		for(int i = 0; i < colNum; i++) {
+			rowI = ii /colNum;
+			colJ = ii % colNum;
+			
+			ss >>val;
+			dataFloatArr[ii] = val;
+
+			if(colJ == 0) {
+				Y[index(rowI, 0, 1)] = val;
+				X[index(rowI, 0, colNum)] = 1.0;
+			} else {
+				X[index(rowI, colJ, colNum)] = val;
+			}
+			
+			ii++;
+		}
+	} 	
+
+	// display(Y, rowNum, 1);
+	// cout<<"================="<<endl;
+	// display(X, rowNum, colNum);
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
