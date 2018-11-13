@@ -6,11 +6,14 @@
 #include <iostream>
 #include <cstdlib>
 #include <ctime> 
+#include <math.h>
 // #include<bits/stdc++.h> 
 
 using namespace std;
 #define index(i, j, colNum)  ((i)*(colNum)) + (j)
+
 #include "0header.h"	
+#include "matrixCalculationGPU.cpp"
 
 /*
 #define CUDA_ERROR_CHECK
@@ -61,113 +64,12 @@ __global__ void FindPrimes (int* d_numbers, int N) {
 	}
 }
 */
-//////////////////////////////// TURN ALL OF THESE INTO KERNELS//////////////////////////////////////////// 
-
-bool inverse(int A[], float inverse[]);
-int determinant(int A[], int n);
-void getCofactor(int A[], int temp[], int p, int q, int n);
-void adjoint(int A[],int adj[]);
-
-
-template<class T> 
-void display(T A[], int rowN, int colN) { 
-	for (int i=0; i< rowN; i++) { 
-		for (int j=0; j< colN; j++) 
-			cout << A[index(i, j, colN)] << " "; 
-		cout << endl; 
-	} 
-}
-
-void matrixPrint(int mat[], int rowN, int colN) {
-	for(int i = 0; i < rowN; i++) {
-		for(int j = 0; j < colN; j++) {
-			printf("%d ", mat[index(i, j, colN)] );
-			if(j == colN -1) printf("\n");
-		}
-	}
-}
-////////////////////////////////////////////
-bool inverse(int A[], float inverse[]) { 
-	int det = determinant(A, N); 
-	if (det == 0) { 
-		cout << "Singular matrix, can't find its inverse\n"; 
-		return false; 
-	} 
-
-	int adj[N*N]; 
-
-	adjoint(A, adj); 
-
-	for (int i=0; i<N; i++) 
-		for (int j=0; j<N; j++) 
-			inverse[index(i,j,N)] = adj[index(i,j,N)]/float(det); 
-
-	return true; 
-}  
-///
-void adjoint(int A[],int adj[]) { 
-	int sign = 1; 
-	int temp[N*N]; 
-
-	for (int i=0; i<N; i++) { 
-		for (int j=0; j<N; j++) { 
-			// Get cofactor of A[i][j] 
-			getCofactor(A, temp, i, j, N); 
-
-			sign = ((i+j)%2==0)? 1: -1; 
-
-			adj[index(j,i,N)] = (sign)*(determinant(temp, N-1)); 
-		} 
-	} 
-} 
-////
-int determinant(int A[], int n) {
-	int D = 0; // Initialize result 
-
-	// Base case : if matrix contains single element 
-	if (n == 1) 
-		return A[index(0,0,N)]; 
-
-	// int temp[N][N]; // To store cofactors 
-	int temp[N*N]; // To store cofactors 
-
-	int sign = 1; // To store sign multiplier 
-
-	// Iterate for each element of first row 
-	for (int f = 0; f < n; f++) { 
-		getCofactor(A, temp, 0, f, n); 
-		D += sign * A[index(0,f,N)] * determinant(temp, n - 1); 
-
-		// terms are to be added with alternate sign 
-		sign = -sign; 
-	} 
-
-	return D; 
-} 
-//////
-void getCofactor(int A[], int temp[], int p, int q, int n) { 
-	int i = 0, j = 0; 
-
-	for (int row = 0; row < n; row++) { 
-		for (int col = 0; col < n; col++) { 
-
-			if (row != p && col != q) { 
-				
-				temp[index(i,j,N)] = A[index(row,col,N)]; 
-				j++;
-
-				if (j == n - 1) { 
-					j = 0; 
-					i++; 
-				} 
-			} 
-		} 
-	} 
-}
-////////////////////////// TURN ALL OF THESE INTO KERNELS ///////////////////////////////
+////////////////////////////// TURN THESE INTO KERNELS //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
-/*__global__*/ void matMultiplication(int matA[], int rowA, int colA, int matB[], int rowB, int colB, int resultMat[]) {
+/*__global__ */void matMultiplication(float matA[], int rowA, int colA, float matB[], float resultMat[]) {
 	int tempSum;
+	int rowB = colA;
+	int colB = rowA;
 
 	for(int i = 0; i < rowA; i++) {
 		for(int j = 0; j < colB; j++) {
@@ -179,8 +81,8 @@ void getCofactor(int A[], int temp[], int p, int q, int n) {
 		}
 	}
 }
-///////////////////////////////////////////////
-/*__global__*/ void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, int colB, float resultMat[]) {
+
+/*__global__ */void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, int colB, float resultMat[]) {
 	float tempSum;
 
 	for(int i = 0; i < rowA; i++) {
@@ -190,16 +92,6 @@ void getCofactor(int A[], int temp[], int p, int q, int n) {
 				tempSum += matA[index(i, k, colA)]*matB[index(k, j, colB)] ;
 			}
 			resultMat[index(i,j, colB)] = tempSum;
-		}
-	}
-}
-///////////////////////////////////////////////
-/*__global__*/ void matIntToFloat(int matA[], int rowA, int colA, float resultMat[], int rowB, int colB) {
-	for(int i = 0; i < rowA; i++) {
-		for(int j = 0; j < colB; j++) {
-			for(int k = 0; k < colA; k ++ ) {
-				resultMat[index(i,j, colB)] = (float) matA[index(i,j, colA)];
-			}
 		}
 	}
 }
@@ -223,19 +115,11 @@ int main(int argc, char *argv[]) {
 
 	cout <<"Rows: " << rowNum << " Columns: " << colNum << endl;
 	
-	//populate X with random values between 0-9 
-	int* X = (int*)malloc(sizeof(int)*rowNum*colNum); 
+	//populate X with random values between 0-9..right now no for stability
+	float* X = (float*)malloc(sizeof(float)*rowNum*colNum); 
 	for(int i = 0; i < rowNum; i++) {
 		for(int j = 0; j < colNum; j++) {
-			X[index(i, j, colNum)] = rand()%10;	
-		}
-	}
-
-	//transpose X on X' and create new matrix
-	int* transposeX = (int*)malloc(sizeof(int)*rowNum*colNum); 
-	for(int i = 0; i < rowNum; i++) {
-		for(int j = 0; j < colNum; j++) {
-			transposeX[index(j,i, rowNum)] = X[index(i,j, colNum)];	
+			X[index(i, j, colNum)] = 1;//(float)(rand()%10);	
 		}
 	}
 
@@ -245,14 +129,26 @@ int main(int argc, char *argv[]) {
 		Y[i] = rand()%2;
 	}
 
+	//Could Potentially use GPU....
+	//transpose X on X' and create new matrix
+	float* transposeX = (float*)malloc(sizeof(float)*rowNum*colNum); 
+	for(int i = 0; i < rowNum; i++) {
+		for(int j = 0; j < colNum; j++) {
+			transposeX[index(j,i, rowNum)] = X[index(i,j, colNum)];	
+		}
+	}
 
 /////////////////////////////////////////DEVICE CODE///////////////////////////
-
+/*
 	//declare and allocate mem for device vars
-	int* d_X; int* d_transposeX; float* d_Y;
+	int* d_X; int* d_transposeX; float* d_Y; int* d_tranXmulxMat;
+	
 	CudaSafeCall(cudaMalloc((void**)&d_X, sizeof(int)*rowNum*colNum));	
-	CudaSafeCall(cudaMalloc((void**)&d_transposeX, sizeof(int)*rowNum*colNum));	
 	CudaSafeCall(cudaMalloc((void**)&d_Y, sizeof(float)*rowNum));	
+	CudaSafeCall(cudaMalloc((void**)&d_transposeX, sizeof(int)*rowNum*colNum));	
+	
+	CudaSafeCall(cudaMalloc((void**)&d_tranXmulxMat, sizeof(int)*colNum*colNum));	
+
 
 	//transfer data to device
 	cudaMemcpy(d_X, X, sizeof(int)*rowNum*colNum, cudaMemcpyHostToDevice); 
@@ -270,41 +166,34 @@ int main(int argc, char *argv[]) {
 
 	//transfer results 
 	cudaMemcpy(number_arr, d_numbers, size, cudaMemcpyDeviceToHost);
+*/
 
-
-
-
-
-////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////////
 
 	N = colNum;
-	int tranXmulxMat[colNum*colNum];
+	/////IMPORTANT: Need tranXmulxMat as 2D array
+	float tranXmulxMat[colNum*colNum];
 
 	///MAKE THIS KERNEL FUNCTION
-	matMultiplication(transposeX, colNum, rowNum, X, rowNum, colNum, tranXmulxMat);
+	matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
 	cout<<"X\'-------->"<<endl;
 
-	///LEAVE THIS CPU
+/////////////////////////LEAVE THIS CPU/////////////////////////////
 	matrixPrint(transposeX, colNum, rowNum);
 	cout<<"X ----------->"<<endl;
 	matrixPrint(X, rowNum, colNum);
 	cout<<"X\'X----------->"<<endl;
 	display(tranXmulxMat, colNum, colNum);
-
-	/////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////
 	float inv[N*N]; // To store inverse of A[][] 
 
 	cout<<"The inverse is --------->"<<endl;
 	if (inverse(tranXmulxMat, inv)) 
 		display(inv, colNum, colNum); 
 
-	//cal (X'X)^-1*X'
-	//------------
-	float XtFloat[colNum*rowNum];
-	matIntToFloat(transposeX, colNum, rowNum, XtFloat, colNum, rowNum);
-
+	//cal (X'X)^-1*X' --------------
 	float resultM[colNum*rowNum];
-	matMultiplFloat(inv, colNum, colNum, XtFloat, colNum, rowNum, resultM);
+	matMultiplFloat(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);
 
 	cout<<"(X'X)^-1*X' ->"<<endl;
 	display(resultM, colNum, rowNum);
@@ -316,12 +205,12 @@ int main(int argc, char *argv[]) {
 	cout<<"final (X'X)^-1*X'Y ->"<<endl;
 	display(finalResult, colNum, 1);
 
+}
 
 
-
-
-	// FIGURING OUT PREDICTION Y ////////////////////////////////////////////
-	cout <<"These are my B values: "<<endl; 
+/*
+/////////////////////////LEAVE THIS! FIGURING OUT PREDICTION Y /////////////////////////////
+	cout <<"\nThese are my B values: "; 
 	//here make Y function...
 	float* B = (float*)malloc(sizeof(float)*colNum);
 	for(int i = 0; i < colNum; i++) {
@@ -332,7 +221,7 @@ int main(int argc, char *argv[]) {
 
 	//create random X values to multiply with the B values to get Y values
 	//Then do the weird formula on Y values
-	cout <<"These are my random X values: "<<endl; 
+	cout <<"These are my random X values: "; 
 	float* newX = (float*)malloc(sizeof(float)*colNum-1);
 	for(int i = 1; i < colNum; i++) {
 		newX[i] = rand()%10;
@@ -341,21 +230,27 @@ int main(int argc, char *argv[]) {
 	cout << endl;
 
 	//now figure out Y by multiplying the Bs with the new random Xs
-	cout <<"This is my predicted Y!: "<<endl; 
 	//float* predictY = (float*)malloc(sizeof(float));
-	float predictY[1] = {0};
+	float predictY = 0;
 	float temp = 0;
 	for (int i=1; i<colNum; i++) {
 		temp += B[i] * newX[i];
-		cout << "My B[" << i << "]: " << B[i] << endl;
-		cout << "My newX[" << i << "]: " << newX[i] << endl;
-		cout << "my temp: " << temp <<endl;
 	}
-	//Y=b0+b1x1+b2x2
-	predictY[0] = B[0] + temp; 
-	cout << "My prediction! " << predictY[0] << endl;
+	//Y=b0+b1X1+b2X2+....bNXN
+	predictY = B[0] + temp; 
+	cout << "b0 + b1X1 + b2X2 + bNXN ----> Y = " << predictY << endl;
 	//Now turn this Y into ln[Y/(1−Y)]=a+bX... ?
-
+	predictY = predictY/(1-predictY); //will give a+bX+...
+	cout << "Y/(1−Y) = " << predictY << endl;
+	
+	if (predictY >= 0) {
+		predictY = log(predictY);
+		cout << "ln[Y/(1−Y)] = " << predictY << endl;
+	} else {
+		cout << "Error: Y/(1−Y) cannot be negative, 0 or 1.\n";
+	}
 
 	return 0;
 }
+
+*/
