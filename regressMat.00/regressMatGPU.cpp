@@ -15,7 +15,7 @@ using namespace std;
 #include "0header.h"	
 #include "matrixCalculationGPU.cpp"
 
-/*
+
 #define CUDA_ERROR_CHECK
 #define CudaSafeCall( err ) __cudaSafeCall( err, __FILE__, __LINE__ )
 #define CudaCheckError()    __cudaCheckError( __FILE__, __LINE__ )
@@ -51,6 +51,7 @@ inline void __cudaCheckError( const char *file, const int line )
     return;
 }
 
+/*
 __global__ void FindPrimes (int* d_numbers, int N) {
 	int tx = blockIdx.x * blockDim.x + threadIdx.x;	
 
@@ -64,14 +65,12 @@ __global__ void FindPrimes (int* d_numbers, int N) {
 	}
 }
 */
-////////////////////////////// TURN THESE INTO KERNELS //////////////////////////////////
+////////////////////////////////////// KERNELS //////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
 
 //matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
-/*__global__ */void matMultiplication(float matA[], int rowA, int colA, float matB[], float resultMat[]) {
+/*__global__ */void matMultiplication(float* matA, int rowA, int colA, float* matB, int rowB, int colB, float* result) {
 	int tempSum;
-	int rowB = colA;
-	int colB = rowA;
 
 	for(int i = 0; i < rowA; i++) {
 		for(int j = 0; j < colB; j++) {
@@ -79,21 +78,7 @@ __global__ void FindPrimes (int* d_numbers, int N) {
 			for(int k = 0; k < colA; k ++ ) {
 				tempSum += matA[index(i, k, colA)]*matB[index(k, j, colB)] ;
 			}
-			resultMat[index(i,j, colB)] = tempSum;
-		}
-	}
-}
-
-/*__global__ */void matMultiplFloat(float matA[], int rowA, int colA, float matB[], int rowB, int colB, float resultMat[]) {
-	float tempSum;
-
-	for(int i = 0; i < rowA; i++) {
-		for(int j = 0; j < colB; j++) {
-			tempSum = 0;
-			for(int k = 0; k < colA; k ++ ) {
-				tempSum += matA[index(i, k, colA)]*matB[index(k, j, colB)] ;
-			}
-			resultMat[index(i,j, colB)] = tempSum;
+			result[index(i,j, colB)] = tempSum;
 		}
 	}
 }
@@ -133,8 +118,7 @@ int main(int argc, char *argv[]) {
 		Y[i] = rand()%2;
 	}
 
-	//Could Potentially use GPU....
-	//transpose X on X' and create new matrix
+	//transpose X on X' and create new matrix, could Potentially use GPU
 	float* transposeX = (float*)malloc(sizeof(float)*rowNum*colNum); 
 	for(int i = 0; i < rowNum; i++) {
 		for(int j = 0; j < colNum; j++) {
@@ -149,12 +133,13 @@ int main(int argc, char *argv[]) {
 	float* finalResult = (float*)malloc(sizeof(float)*colNum); 
 
 
-/////////////////////////////////////////DEVICE CODE///////////////////////////
-/*
+/////////////////////////////////////////DEVICE CODE////////////////////////////////////////
+
 	//declare and allocate mem for device vars
 	float* d_X; float* d_transposeX; float* d_Y; 
-	float* d_tranXmulxMat; float* d_inv; float* d_resultM; float* d_finalResult;
-	
+	float* d_tranXmulxMat; float* d_resultM; float* d_finalResult;
+//	float* d_inv; 
+
 	//for already init CPU arrays
 	CudaSafeCall(cudaMalloc((void**)&d_X, sizeof(float)*rowNum*colNum));	
 	CudaSafeCall(cudaMalloc((void**)&d_Y, sizeof(float)*rowNum));	
@@ -162,7 +147,7 @@ int main(int argc, char *argv[]) {
 	
 	//for results
 	CudaSafeCall(cudaMalloc((void**)&d_tranXmulxMat, sizeof(float)*colNum*colNum));	
-	CudaSafeCall(cudaMalloc((void**)&d_inv, sizeof(float)*colNum*colNum));	
+//	CudaSafeCall(cudaMalloc((void**)&d_inv, sizeof(float)*colNum*colNum));	
 	CudaSafeCall(cudaMalloc((void**)&d_resultM, sizeof(float)*colNum*rowNum));	
 	CudaSafeCall(cudaMalloc((void**)&d_finalResult, sizeof(float)*colNum));		
 
@@ -172,49 +157,71 @@ int main(int argc, char *argv[]) {
 	cudaMemcpy(d_Y, Y, sizeof(int)*rowNum, cudaMemcpyHostToDevice); 
 
 	//setup kernel config
-	int blocks_per_grid = (N/1024 + 1;
+	int blocks_per_grid = ((rowNum*colNum)/32 + 1);
 	dim3 dimGrid(blocks_per_grid, 1, 1); 
-	dim3 dimBlock(1024, 1, 1);
+	dim3 dimBlock(32, 1, 1);
 
-	//call cuda kernel
-	//FindPrimes<<<dimGrid, dimBlock>>>(d_numbers, N);  //Call kernel for all the functions you wish....
-	CudaCheckError();
-
-	//transfer results 
-	cudaMemcpy(tranXmulxMat, d_tranXmulxMat, size, cudaMemcpyDeviceToHost);
-	cudaMemcpy(inv, d_inv, size, cudaMemcpyDeviceToHost);
-	cudaMemcpy(resultM, d_resultM, size, cudaMemcpyDeviceToHost);
-	cudaMemcpy(finalResult, d_finalResult, size, cudaMemcpyDeviceToHost);
-*/
-
-////////////////////////////////////////////////////////////////////////////////////////////
-
+	//No kernel
 	cout<<"X\'-------->"<<endl;
 	matrixPrint(transposeX, colNum, rowNum);
 	
+	//No kernel	
 	cout<<"X ----------->"<<endl;
 	matrixPrint(X, rowNum, colNum);
-	
+
+	//Call kernel
 	cout<<"X\'X----------->"<<endl;
-	matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
+	matMultiplication<<<dimGrid, dimBlock>>>(d_transposeX, colNum, rowNum, d_X, rowNum, colNum, d_tranXmulxMat); 
+	CudaCheckError();
+	cudaMemcpy(tranXmulxMat, d_tranXmulxMat, size, cudaMemcpyDeviceToHost);
+	display(tranXmulxMat, colNum, colNum);
+
+	//No kernel
+	cout<<"The inverse is --------->"<<endl;
+	if (inverse(tranXmulxMat, inv)) 
+		display(inv, colNum, colNum); 
+
+	//Call kernel
+	cout<<"(X'X)^-1*X' ->"<<endl;
+	matMultiplication<<<dimGrid, dimBlock>>>(d_inv, colNum, colNum, d_transposeX, colNum, rowNum, d_resultM); 
+	CudaCheckError();
+	cudaMemcpy(resultM, d_resultM, size, cudaMemcpyDeviceToHost);
+	display(resultM, colNum, rowNum);
+
+	//Call kernel
+	cout<<"final (X'X)^-1*X'Y ->"<<endl;
+	matMultiplication<<<dimGrid, dimBlock>>>(d_resultM, colNum, rowNum, Y, rowNum, 1, d_finalResult); 
+	CudaCheckError();
+	cudaMemcpy(finalResult, d_finalResult, size, cudaMemcpyDeviceToHost);
+	display(finalResult, colNum, 1);
+
+//	cudaMemcpy(inv, d_inv, size, cudaMemcpyDeviceToHost);
+
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////
+/*	
+	cout<<"X\'X----------->"<<endl;
+	matMultiplication(transposeX, colNum, rowNum, X, rowNum, colNum, tranXmulxMat);
 	display(tranXmulxMat, colNum, colNum);
 
 	//cal inverse --------------
 	cout<<"The inverse is --------->"<<endl;
 	if (inverse(tranXmulxMat, inv)) 
 		display(inv, colNum, colNum); 
-
+	
 	//cal (X'X)^-1*X' --------------
 	cout<<"(X'X)^-1*X' ->"<<endl;
-	matMultiplFloat(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);	
+	matMultiplication(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);	
 	display(resultM, colNum, rowNum);
 	
 	//cal (X'X)^-1*X'Y --------------
 	cout<<"final (X'X)^-1*X'Y ->"<<endl;
-	matMultiplFloat(resultM, colNum, rowNum, Y, rowNum, 1, finalResult);	
+	matMultiplication(resultM, colNum, rowNum, Y, rowNum, 1, finalResult);	
 	display(finalResult, colNum, 1);
-}
 
+}
+*/
 
 /*
 /////////////////////////LEAVE THIS! FIGURING OUT PREDICTION Y /////////////////////////////
