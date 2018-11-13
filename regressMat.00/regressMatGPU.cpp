@@ -66,6 +66,8 @@ __global__ void FindPrimes (int* d_numbers, int N) {
 */
 ////////////////////////////// TURN THESE INTO KERNELS //////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////////////
+
+//matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
 /*__global__ */void matMultiplication(float matA[], int rowA, int colA, float matB[], float resultMat[]) {
 	int tempSum;
 	int rowB = colA;
@@ -116,10 +118,12 @@ int main(int argc, char *argv[]) {
 	cout <<"Rows: " << rowNum << " Columns: " << colNum << endl;
 	
 	//populate X with random values between 0-9..right now no for stability
+	int count = 0;
 	float* X = (float*)malloc(sizeof(float)*rowNum*colNum); 
 	for(int i = 0; i < rowNum; i++) {
 		for(int j = 0; j < colNum; j++) {
-			X[index(i, j, colNum)] = 1;//(float)(rand()%10);	
+			X[index(i, j, colNum)] = count;//(float)(rand()%10);	
+			count++;
 		}
 	}
 
@@ -138,17 +142,29 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
+	N = colNum;
+	float* tranXmulxMat = (float*)malloc(sizeof(float)*colNum*colNum); 
+	float* inv = (float*)malloc(sizeof(float)*colNum*colNum); 
+	float* resultM = (float*)malloc(sizeof(float)*rowNum*colNum); 
+	float* finalResult = (float*)malloc(sizeof(float)*colNum); 
+
+
 /////////////////////////////////////////DEVICE CODE///////////////////////////
 /*
 	//declare and allocate mem for device vars
-	int* d_X; int* d_transposeX; float* d_Y; int* d_tranXmulxMat;
+	float* d_X; float* d_transposeX; float* d_Y; 
+	float* d_tranXmulxMat; float* d_inv; float* d_resultM; float* d_finalResult;
 	
-	CudaSafeCall(cudaMalloc((void**)&d_X, sizeof(int)*rowNum*colNum));	
+	//for already init CPU arrays
+	CudaSafeCall(cudaMalloc((void**)&d_X, sizeof(float)*rowNum*colNum));	
 	CudaSafeCall(cudaMalloc((void**)&d_Y, sizeof(float)*rowNum));	
-	CudaSafeCall(cudaMalloc((void**)&d_transposeX, sizeof(int)*rowNum*colNum));	
+	CudaSafeCall(cudaMalloc((void**)&d_transposeX, sizeof(float)*rowNum*colNum));	
 	
-	CudaSafeCall(cudaMalloc((void**)&d_tranXmulxMat, sizeof(int)*colNum*colNum));	
-
+	//for results
+	CudaSafeCall(cudaMalloc((void**)&d_tranXmulxMat, sizeof(float)*colNum*colNum));	
+	CudaSafeCall(cudaMalloc((void**)&d_inv, sizeof(float)*colNum*colNum));	
+	CudaSafeCall(cudaMalloc((void**)&d_resultM, sizeof(float)*colNum*rowNum));	
+	CudaSafeCall(cudaMalloc((void**)&d_finalResult, sizeof(float)*colNum));		
 
 	//transfer data to device
 	cudaMemcpy(d_X, X, sizeof(int)*rowNum*colNum, cudaMemcpyHostToDevice); 
@@ -156,7 +172,7 @@ int main(int argc, char *argv[]) {
 	cudaMemcpy(d_Y, Y, sizeof(int)*rowNum, cudaMemcpyHostToDevice); 
 
 	//setup kernel config
-	int blocks_per_grid = ((N-2)/1024) + 1;
+	int blocks_per_grid = (N/1024 + 1;
 	dim3 dimGrid(blocks_per_grid, 1, 1); 
 	dim3 dimBlock(1024, 1, 1);
 
@@ -165,46 +181,38 @@ int main(int argc, char *argv[]) {
 	CudaCheckError();
 
 	//transfer results 
-	cudaMemcpy(number_arr, d_numbers, size, cudaMemcpyDeviceToHost);
+	cudaMemcpy(tranXmulxMat, d_tranXmulxMat, size, cudaMemcpyDeviceToHost);
+	cudaMemcpy(inv, d_inv, size, cudaMemcpyDeviceToHost);
+	cudaMemcpy(resultM, d_resultM, size, cudaMemcpyDeviceToHost);
+	cudaMemcpy(finalResult, d_finalResult, size, cudaMemcpyDeviceToHost);
 */
 
 ////////////////////////////////////////////////////////////////////////////////////////////
 
-	N = colNum;
-	/////IMPORTANT: Need tranXmulxMat as 2D array
-	float tranXmulxMat[colNum*colNum];
-
-	///MAKE THIS KERNEL FUNCTION
-	matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
 	cout<<"X\'-------->"<<endl;
-
-/////////////////////////LEAVE THIS CPU/////////////////////////////
 	matrixPrint(transposeX, colNum, rowNum);
+	
 	cout<<"X ----------->"<<endl;
 	matrixPrint(X, rowNum, colNum);
+	
 	cout<<"X\'X----------->"<<endl;
+	matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
 	display(tranXmulxMat, colNum, colNum);
-/////////////////////////////////////////////////////////////////////
-	float inv[N*N]; // To store inverse of A[][] 
 
+	//cal inverse --------------
 	cout<<"The inverse is --------->"<<endl;
 	if (inverse(tranXmulxMat, inv)) 
 		display(inv, colNum, colNum); 
 
 	//cal (X'X)^-1*X' --------------
-	float resultM[colNum*rowNum];
-	matMultiplFloat(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);
-
 	cout<<"(X'X)^-1*X' ->"<<endl;
+	matMultiplFloat(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);	
 	display(resultM, colNum, rowNum);
 	
-	//cal (X'X)^-1*X'Y
-	float finalResult[colNum];
-	matMultiplFloat(resultM, colNum, rowNum, Y, rowNum, 1, finalResult);
-
+	//cal (X'X)^-1*X'Y --------------
 	cout<<"final (X'X)^-1*X'Y ->"<<endl;
+	matMultiplFloat(resultM, colNum, rowNum, Y, rowNum, 1, finalResult);	
 	display(finalResult, colNum, 1);
-
 }
 
 

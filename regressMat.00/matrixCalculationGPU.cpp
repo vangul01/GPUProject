@@ -1,4 +1,5 @@
 /*
+for good style:
 bool inverse(int A[], float inverse[]);
 int determinant(int A[], int n);
 void getCofactor(int A[], int temp[], int p, int q, int n);
@@ -50,13 +51,13 @@ void getCofactor(T A[], float temp[], int p, int q, int n) {
 template<class T> 
 float determinant(T A[], int n) {
 	int D = 0; // Initialize result 
-
+//	cout << "Whats n in determinant? " << n << endl;
 	// Base case : if matrix contains single element 
 	if (n == 1) 
 		return A[index(0,0,N)]; 
 
 	// int temp[N][N]; // To store cofactors 
-	float temp[N*N]; // To store cofactors 
+	float temp[N*N]; // To store cofactors .. needs to be 2D I suppose
 
 	int sign = 1; // To store sign multiplier 
 
@@ -93,6 +94,7 @@ void adjoint(T A[],float adj[]) {
 template<class T> 
 bool inverse(T A[], float inverse[]) { 
 	float det = determinant(A, N); 
+//	cout << "Whats N in inverse? " << N << endl;
 	if (det == 0) { 
 		cout << "Singular matrix, can't find its inverse\n"; 
 		return false; 
