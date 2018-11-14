@@ -71,7 +71,8 @@ __global__ void FindPrimes (int* d_numbers, int N) {
 //matMultiplication(transposeX, colNum, rowNum, X, tranXmulxMat);
 /*__global__ */void matMultiplication(float* matA, int rowA, int colA, float* matB, int rowB, int colB, float* result) {
 	int tempSum;
-
+	int tx = blockIdx.x * blockDim.x + threadIdx.x;
+	
 	for(int i = 0; i < rowA; i++) {
 		for(int j = 0; j < colB; j++) {
 			tempSum = 0;
@@ -81,6 +82,25 @@ __global__ void FindPrimes (int* d_numbers, int N) {
 			result[index(i,j, colB)] = tempSum;
 		}
 	}
+
+
+/*
+  //compute only non-edge cases and put into d_result 
+  //thread is within bounds of playground dimensions 
+  if (tx < N*N) 
+  { 
+    if (tx > 0 && tx < N-1) //threads that are not on the edges
+    { 
+        for (int i = 1; i < N-1; i++) //i's that are not on the edges
+        { 
+          d_result[index(tx, i, N)] = (d_temp[index(tx-1, i, N)] + d_temp[index(tx+1, i, N)] 
+            + d_temp[index(tx, i-1, N)] + d_temp[index(tx, i+1, N)])/4.0;
+        }
+    }
+  }
+
+*/
+
 }
 
 ////////////////////////////////// MAIN ///////////////////////////////////////////
