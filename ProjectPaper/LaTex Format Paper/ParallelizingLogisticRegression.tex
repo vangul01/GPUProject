@@ -44,13 +44,13 @@ Parallelizing Logistic Regression
 %}
 
 \author{Wansang Lim$$ and Valerie Angulo$$% <-this % stops a space
-\thanks{*This work was not supported by any organization}% <-this % stops a space
-\thanks{$^{1}$H. Kwakernaak is with Faculty of Electrical Engineering, Mathematics and Computer Science,
-        University of Twente, 7500 AE Enschede, The Netherlands
-        {\tt\small h.kwakernaak at papercept.net}}%
-\thanks{$^{2}$P. Misra is with the Department of Electrical Engineering, Wright State University,
-        Dayton, OH 45435, USA
-        {\tt\small p.misra at ieee.org}}%
+%\thanks{*This work was not supported by any organization}% <-this % stops a space
+%\thanks{$^{1}$H. Kwakernaak is with Faculty of Electrical Engineering, Mathematics and Computer Science,
+%        University of Twente, 7500 AE Enschede, The Netherlands
+%        {\tt\small h.kwakernaak at papercept.net}}%
+%\thanks{$^{2}$P. Misra is with the Department of Electrical Engineering, Wright State University,
+%        Dayton, OH 45435, USA
+%        {\tt\small p.misra at ieee.org}}%
 }
 
 
@@ -65,8 +65,7 @@ Parallelizing Logistic Regression
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \begin{abstract}
-
-Add stuff
+  Logistic regression is a statistical analysis tool used as a predictive analytic in a variety of disciplines. In this paper, we focus on parallelizing binary logistic regression analysis for predictive analytics in data science for environmental science datasets. Parallelizing logistic regression would improve computation time and decrease memory latency when analyzing large data sets, allowing for more data to be processed faster. In this paper, we compare a sequential implementation of binary logistic regression with a CUDA implementation, a parallelized R implementation and a multiprocessor OpenCV version, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and less memory latency for CUDA versions of logistic regression.
 
 \end{abstract}
 
@@ -74,33 +73,48 @@ Add stuff
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
 
-Logistic Regression is used as a predictive analytic in many disciplines ranging from biology and conservation to business. This method of analysis is primarily used in the field of Data Science in order to provide meaningful insights for patterns found in large amounts of data. 
+Logistic Regression is used as a predictive analytic in many disciplines ranging from biology and conservation to business. It models a binary dependent and one or more binary or nonbinary independent variables. This is useful in cases of observing phenomena that may occur due to a specific event. The purpose of logistic regression is to predict the occurrence of phenomena based on acquired current data. Mathematically, the binary dependent variable is either 0 or 1 and indicates the presence or absence of a certain condition, such as alive/dead or win/lose, that may be related to the independent conditions. In this paper, we are primarily concerned with the applications of binary logistic regression analysis for predictive analytics in data science, particularly for environmental science datasets. For our purpose, logistic regression is used to classify dependent variables into different groups. 
+
+Currently, there is an abundance of large datasets that are open sourced and easily accessible to the public. This is especially beneficial for scientific research. However, processing large data sets is time consuming and resource intensive for CPU in terms of memory and computation time. Sequential implementations of logistic regression require a lot of time to process smaller amounts of data and have a high memory latency. Implementation of a parallelized binary logistic regression would allow for an increased amount of data to be processed in less time and with less resource intensive computations. Logistic regression is an excellent analytic to parallelize because it primarily utilizes matrix multiplication, which is easy to convert to parallel code. It also utilizes an inverse function which is a variation of matrix multiplication and determines the natural log of a matrix, a function that is easily supported by parallelism. In this paper, we compare a sequential implementation of binary logistic regression with a CUDA implementation, a parallelized R implementation and a multiprocessor OpenCV version, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and less memory latency for CUDA versions of logistic regression, as well as parallelized R implementations.
+
 
 \section{BACKGROUND}
 
-\subsection{Subheading1 (Heading 2)}
+Logistic regression is a predictive analytic that is used to categorize data into different groups. It can be binomial, ordinal or multinomial and is based on linear regression in that logistic regression estimates a multiple linear regression function. It is the correct regression to use if there is a binary dependent variable, for example time spent studying versus whether a student passes or fails a course, or other situations depending on independent variables such as win/lose, dead/alive, yes/no, present/absent etc. Binary logistic regression is used to describe the relationship between a binary dependent variable and one or many independent variables. This predictive analytic tool is useful in data science for the discovery of new insights as to what patterns one might expect with certain independent factors at play. 
 
-Add stuff
+Logistic regression model is useful in determining the relationship between a random value and its covariants, so our data was randomly generated values and we looked to find a dependent Y.
 
-\subsection{Subheading2}
+We first coded a sequential version of a linear regression and then modified it to be a logistic regression. In this linear model example
+$$l = B0 + B1x1 + B2x2$$
+the x’s are the predictors and the Bi’s are the parameters of the model, with B0 being a constant term. To turn this equation into a logistic model, we must take the log odds of the linear regression like so.
+$$o = b^ B0 + B1x1 + Bx2$$
+b is the base of the logarithm and exponent. 
 
-Add stuff
+
+Logistic regression’s core is estimating the log odds of an event. The log odds of a value is a linear combination of one or more independent variables, which can be either binary or any real value. With binary logistic regression, we can predict the odds of a dependent variable based on the independent variables/predictors/x values. The odds are determined by dividing the probability of an outcome occurring by the probability that is will not occur. We then determine a continuous version of the dependent binary by taking the logarithm of the odds of an event happening. The log of the odds is the logit of the probability.
+
+To fit the logit of the probability of success with the predictors/x values, we must take the inverse of the natural log, then we are able to obtain a continuous predictor for the odds of an event happening. 
 
 \section{LITERATURE SURVEY}
 
-Before you begin to format your paper, first write and save the content as a separate text file. Keep your text and graphic files separate until after the text has been formatted and styled. Do not use hard tabs, and limit use of hard returns to only one return at the end of a paragraph. Do not add any kind of pagination anywhere in the paper. Do not number text heads-the template will do that for you.
+We researched a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regression.
 
-Finally, complete content and organizational editing before formatting. Please take note of the following items when proofreading spelling and grammar:
+\subsection{What have the others do to solve this problem}
+Add stuff
 
-\subsection{Abbreviations and Acronyms} Define abbreviations and acronyms the first time they are used in the text, even after they have been defined in the abstract. Abbreviations such as IEEE, SI, MKS, CGS, sc, dc, and rms do not have to be defined. Do not use abbreviations in the title or heads unless they are unavoidable.
+\subsection{What are the pros and cons of this previous work}
+Add stuff
+
+\subsection{Implementations from others that we’ve used or referenced} 
+Add stuff
 
 \subsection{Units}
 
 \begin{itemize}
 
-\item Use either SI (MKS) or CGS as primary units. (SI units are encouraged.) English units may be used as secondary units (in parentheses). An exception would be the use of English units as identifiers in trade, such as Ò3.5-inch disk driveÓ.
-\item Avoid combining SI and CGS units, such as current in amperes and magnetic field in oersteds. This often leads to confusion because equations do not balance dimensionally. If you must use mixed units, clearly state the units for each quantity that you use in an equation.
-\item Do not mix complete spellings and abbreviations of units: ÒWb/m2Ó or Òwebers per square meterÓ, not Òwebers/m2Ó.  Spell out units when they appear in text: Ò. . . a few henriesÓ, not Ò. . . a few HÓ.
+\item blank
+\item blank
+\item blank
 \item Use a zero before decimal points: Ò0.25Ó, not Ò.25Ó. Use Òcm3Ó, not ÒccÓ. (bullet list)
 
 \end{itemize}
@@ -108,7 +122,6 @@ Finally, complete content and organizational editing before formatting. Please t
 
 \subsection{Equations}
 
-The equations are an exception to the prescribed specifications of this template. You will need to determine whether or not your equation should be typed using either the Times New Roman or the Symbol font (please no other font). To create multileveled equations, it may be necessary to treat the equation as a graphic and insert it into the text after your paper is styled. Number equations consecutively. Equation numbers, within parentheses, are to position flush right, as in (1), using a right tab stop. To make your equations more compact, you may use the solidus ( / ), the exp function, or appropriate exponents. Italicize Roman symbols for quantities and variables, but not Greek symbols. Use a long dash rather than a hyphen for a minus sign. Punctuate equations with commas or periods when they are part of a sentence, as in
 
 $$
 \alpha + \beta = \chi \eqno{(1)}
@@ -116,21 +129,13 @@ $$
 
 Note that the equation is centered using a center tab stop. Be sure that the symbols in your equation have been defined before or immediately following the equation. Use Ò(1)Ó, not ÒEq. (1)Ó or Òequation (1)Ó, except at the beginning of a sentence: ÒEquation (1) is . . .Ó
 
-\subsection{Some Common Mistakes}
 \begin{itemize}
 
 
-\item The word ÒdataÓ is plural, not singular.
-\item The subscript for the permeability of vacuum ?0, and other common scientific constants, is zero with subscript formatting, not a lowercase letter ÒoÓ.
-\item In American English, commas, semi-/colons, periods, question and exclamation marks are located within quotation marks only when a complete thought or name is cited, such as a title or full quotation. When quotation marks are used, instead of a bold or italic typeface, to highlight a word or phrase, punctuation should appear outside of the quotation marks. A parenthetical phrase or statement at the end of a sentence is punctuated outside of the closing parenthesis (like this). (A parenthetical sentence is punctuated within the parentheses.)
-\item A graph within a graph is an ÒinsetÓ, not an ÒinsertÓ. The word alternatively is preferred to the word ÒalternatelyÓ (unless you really mean something that alternates).
-\item Do not use the word ÒessentiallyÓ to mean ÒapproximatelyÓ or ÒeffectivelyÓ.
-\item In your paper title, if the words Òthat usesÓ can accurately replace the word ÒusingÓ, capitalize the ÒuÓ; if not, keep using lower-cased.
-\item Be aware of the different meanings of the homophones ÒaffectÓ and ÒeffectÓ, ÒcomplementÓ and ÒcomplimentÓ, ÒdiscreetÓ and ÒdiscreteÓ, ÒprincipalÓ and ÒprincipleÓ.
-\item Do not confuse ÒimplyÓ and ÒinferÓ.
-\item The prefix ÒnonÓ is not a word; it should be joined to the word it modifies, usually without a hyphen.
-\item There is no period after the ÒetÓ in the Latin abbreviation Òet al.Ó.
-\item The abbreviation Òi.e.Ó means Òthat isÓ, and the abbreviation Òe.g.Ó means Òfor exampleÓ.
+\item blank
+\item blank
+\item blank
+\item blank
 
 \end{itemize}
 
@@ -139,14 +144,18 @@ Note that the equation is centered using a center tab stop. Be sure that the sym
 We propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. This will allow researchers to 
 
 \section{EXPERIMENTAL SETUP}
+For our experiment, we are using a binary logistic regression, where we are dealing with a dependent variable that can only be either 0 or 1, whereas our independent variables are real numbers. To make sure our generated data set was good, we followed the assumptions of data used for logistic regression applications such as that the dependent variable is binary, there are no outliers in the data or strong correlations between independent data sets and that there were no values present in the data that were below -3.29 or above 3.29(https://www.statisticssolutions.com/what-is-logistic-regression/). 
 
-Use this sample document as your LaTeX source file to create your document. Save this file as {\bf root.tex}. You have to make sure to use the cls file that came with this distribution. If you use a different style file, you cannot expect to get required margins. Note also that when you are creating your out PDF file, the source file is only part of the equation. {\it Your \TeX\ $\rightarrow$ PDF filter determines the output file size. Even if you make all the specifications to output a letter file in the source - if you filter is set to produce A4, you will only get A4 output. }
+Another consideration we had to take into account was the model fit, having more independent variables increases the amount of variance ($$R^2$$) but adding too many variables will decrease the generalizability of the predictive analytic, rendering it less accurate. To analyze the accuracy of our logistic regression, we computed its goodness-of-fit based on the Chi square test, as well as the amount of variance $$R^2$$.  
 
-It is impossible to account for all possible situation, one would encounter using \TeX. If you are using multiple \TeX\ files you must make sure that the ``MAIN`` source file is called root.tex - this is particularly important if your conference is using PaperPlaza's built in \TeX\ to PDF conversion tool.
+Logistic regression model is useful in determining the relationship between a random value and its covariants, so our data was randomly generated values and we looked to find a dependent Y.
 
-\subsection{Headings, etc}
+We first coded a sequential version of a linear regression and then modified it to be a logistic regression. 
 
-Text heads organize the topics on a relational, hierarchical basis. For example, the paper title is the primary text head because all subsequent material relates and elaborates on this one topic. If there are two or more sub-topics, the next level head (uppercase Roman numerals) should be used and, conversely, if there are not at least two sub-topics, then no subheads should be introduced. Styles named ÒHeading 1Ó, ÒHeading 2Ó, ÒHeading 3Ó, and ÒHeading 4Ó are prescribed.
+
+\subsection{blank}
+
+blank
 
 \subsection{Figures and Tables}
 
@@ -182,10 +191,20 @@ Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather t
 
 
 \section{RESULTS AND DISCUSSION}
+add stuff
 
 \section{CONCLUSIONS}
 
-A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest applications and extensions. 
+A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest 
+applications and extensions. 
+
+\begin{itemize}
+
+\item final bullets 
+\item final bullets 
+\item final bullets 
+\item final bullets 
+\end{itemize}
 
 \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens
@@ -203,13 +222,13 @@ A conclusion section is not required. Although a conclusion may review the main 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\section*{APPENDIX}
+%\section*{APPENDIX}
 
-Appendixes should appear before the acknowledgment.
+%Appendixes should appear before the acknowledgment.
 
 \section*{ACKNOWLEDGMENT}
 
-Thanks to Professor Zahran for your help with our project.
+Thanks to Professor Zahran for all your help.
 
 \begin{thebibliography}{99}
 
