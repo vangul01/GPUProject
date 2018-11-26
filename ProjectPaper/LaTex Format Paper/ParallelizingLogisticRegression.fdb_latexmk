@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1542554353 "ParallelizingLogisticRegression.tex" "ParallelizingLogisticRegression.pdf" "ParallelizingLogisticRegression" 1542554354
+["pdflatex"] 1543257416 "ParallelizingLogisticRegression.tex" "ParallelizingLogisticRegression.pdf" "ParallelizingLogisticRegression" 1543257417
   "/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc" 1480098666 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2017/texmf-dist/fonts/map/fontname/texfonts.map" 1480098670 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1480098689 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -24,6 +24,7 @@
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb" 1480098733 36281 c355509802a035cadc5f15869451dcee ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb" 1480098733 35752 024fb6c41858982481f6968b5fc26508 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb" 1480098733 32762 224316ccc9ad3ca0423a14971cfa7fc1 ""
+  "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb" 1480098733 32569 5e5ddc8df908dea60932f3c484a54c0d ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb" 1480098733 32716 08e384dc442464e7285e891af9f45947 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmb8a.pfb" 1480098746 44729 811d6c62865936705a31c797a1d5dada ""
   "/usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb" 1480098746 44656 0cbca70e0534538582128f6b54593cca ""
@@ -39,10 +40,10 @@
   "/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1495593472 2350277 a699055bee05bf8a40b0504752487295 ""
   "/usr/local/texlive/2017/texmf-var/web2c/pdftex/pdflatex.fmt" 1495593487 4129592 0e6cfee100d68e6d96b92c0258f2ff73 ""
   "/usr/local/texlive/2017/texmf.cnf" 1495593465 577 2b71d4d888f9e5560b2e99985915a9fa ""
-  "ParallelizingLogisticRegression.aux" 1542554353 1951 e28ab372691e99212a2095bcb12c89d6 ""
-  "ParallelizingLogisticRegression.tex" 1542554353 17456 9dee8552cd4b9b4b51758c48455d6f0a ""
-  "ieeeconf.cls" 1542147290 197436 33af3dd5069be3a823450cf46fa3facf ""
+  "ParallelizingLogisticRegression.aux" 1543257417 2056 1eefe7464102e9532f1fb26c72f06e7b ""
+  "ParallelizingLogisticRegression.tex" 1543257416 18857 4b784a0440b54ab43dd98cfbbbd721a2 ""
+  "ieeeconf.cls" 1542554799 197436 33af3dd5069be3a823450cf46fa3facf ""
   (generated)
+  "ParallelizingLogisticRegression.aux"
   "ParallelizingLogisticRegression.pdf"
   "ParallelizingLogisticRegression.log"
-  "ParallelizingLogisticRegression.aux"

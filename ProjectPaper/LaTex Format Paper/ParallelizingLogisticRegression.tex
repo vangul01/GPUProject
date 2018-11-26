@@ -73,75 +73,59 @@ Parallelizing Logistic Regression
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
 
-Logistic Regression is used as a predictive analytic in many disciplines ranging from biology and conservation to business. It models a binary dependent and one or more binary or nonbinary independent variables. This is useful in cases of observing phenomena that may occur due to a specific event. The purpose of logistic regression is to predict the occurrence of phenomena based on acquired current data. Mathematically, the binary dependent variable is either 0 or 1 and indicates the presence or absence of a certain condition, such as alive/dead or win/lose, that may be related to the independent conditions. In this paper, we are primarily concerned with the applications of binary logistic regression analysis for predictive analytics in data science, particularly for environmental science datasets. For our purpose, logistic regression is used to classify dependent variables into different groups. 
+Logistic Regression is used as a predictive analytic in many disciplines ranging from biology and conservation to business. It models a binary dependent and one or more binary or nonbinary independent variables. This is useful in cases of observing phenomena that may occur due to a specific event. The purpose of logistic regression is to predict the occurrence of phenomena based on acquired current data. Mathematically, the binary dependent variable is either 0 or 1 and indicates the presence or absence of a certain condition, such as alive/dead or win/lose, that may be related to the independent conditions. In this paper, we are primarily concerned with the applications of binary logistic regression analysis for predictive analytics in data science, particularly for environmental science datasets. For our purpose, logistic regression is used to classify dependent variables into different groups.
 
-Currently, there is an abundance of large datasets that are open sourced and easily accessible to the public. This is especially beneficial for scientific research. However, processing large data sets is time consuming and resource intensive for CPU in terms of memory and computation time. Sequential implementations of logistic regression require a lot of time to process smaller amounts of data and have a high memory latency. Implementation of a parallelized binary logistic regression would allow for an increased amount of data to be processed in less time and with less resource intensive computations. Logistic regression is an excellent analytic to parallelize because it primarily utilizes matrix multiplication, which is easy to convert to parallel code. It also utilizes an inverse function which is a variation of matrix multiplication and determines the natural log of a matrix, a function that is easily supported by parallelism. In this paper, we compare a sequential implementation of binary logistic regression with a CUDA implementation, a parallelized R implementation and a multiprocessor OpenCV version, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and less memory latency for CUDA versions of logistic regression, as well as parallelized R implementations.
+Currently, there is an abundance of large datasets that are open sourced and easily accessible to the public. This is especially beneficial for scientific research. However, processing large data sets is time consuming and resource intensive for CPU in terms of memory and computation time. Sequential implementations of logistic regression require a lot of time to process smaller amounts of data and have a high memory latency. Implementation of a parallelized binary logistic regression would allow for an increased amount of data to be processed in less time and with less resource intensive computations. Logistic regression is an excellent analytic to parallelize because it primarily utilizes matrix multiplication, which is easy to convert to parallel code. It also utilizes an inverse function which is a variation of matrix multiplication and determines the natural log of a matrix, a function that is easily supported by parallelism. In this paper, we compare a sequential implementation of binary logistic regression with a CUDA implementation, a parallelized R implementation and a multiprocessor OpenML(???) version, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and less memory latency for CUDA versions of logistic regression, as well as parallelized R implementations.
 
 
 \section{BACKGROUND}
 
-Logistic regression is a predictive analytic that is used to categorize data into different groups. It can be binomial, ordinal or multinomial and is based on linear regression in that logistic regression estimates a multiple linear regression function. It is the correct regression to use if there is a binary dependent variable, for example time spent studying versus whether a student passes or fails a course, or other situations depending on independent variables such as win/lose, dead/alive, yes/no, present/absent etc. Binary logistic regression is used to describe the relationship between a binary dependent variable and one or many independent variables. This predictive analytic tool is useful in data science for the discovery of new insights as to what patterns one might expect with certain independent factors at play. 
+Logistic regression is a predictive analytic that is used to categorize data into different groups. It can be binomial, ordinal or multinomial and is based on linear regression; a logistic regression estimates a multiple linear regression function. It is the correct regression to use if there is a binary dependent variable, such as time spent studying versus whether a student passes or fails a course, or other situations depending on independent variables such as win/lose, dead/alive, yes/no, present/absent etc. Binary logistic regression is used to describe the relationship between a binary dependent variable and one or many independent variables. This predictive analytic tool is useful in data science and many other fields for predicting how likely an event will occur when certain independent factors are present. Following are the steps needed to implement a logistic regression.
 
-Logistic regression model is useful in determining the relationship between a random value and its covariants, so our data was randomly generated values and we looked to find a dependent Y.
+\subsection{Linear Regression}
+In order to do a logistic regression, we must first start with a linear regression.
 
-We first coded a sequential version of a linear regression and then modified it to be a logistic regression. In this linear model example
-$$l = B0 + B1x1 + B2x2$$
-the x’s are the predictors and the Bi’s are the parameters of the model, with B0 being a constant term. To turn this equation into a logistic model, we must take the log odds of the linear regression like so.
-$$o = b^ B0 + B1x1 + Bx2$$
-b is the base of the logarithm and exponent. 
+$$Y = b_0 + b_1X_1 + b_2X_2 + b_nX_n$$
 
+In this linear model, the x’s are the predictors/independent variables and the Bn’s are the parameters of the model, with $b_0$ being a constant term. The Y value is the outcome /dependent variable and can vary from negative to positive infinity for a linear regression. %The graph for a linear regression is shown below, note how it can extend infinitely in both directions: (insert graph)
 
-Logistic regression’s core is estimating the log odds of an event. The log odds of a value is a linear combination of one or more independent variables, which can be either binary or any real value. With binary logistic regression, we can predict the odds of a dependent variable based on the independent variables/predictors/x values. The odds are determined by dividing the probability of an outcome occurring by the probability that is will not occur. We then determine a continuous version of the dependent binary by taking the logarithm of the odds of an event happening. The log of the odds is the logit of the probability.
+\subsection{Logistic Function}
+The next step is to turn the linear regression into a sigmoid function, also known as a logistic function. 
 
-To fit the logit of the probability of success with the predictors/x values, we must take the inverse of the natural log, then we are able to obtain a continuous predictor for the odds of an event happening. 
+$$p(x) =  \frac{1}{1+e^{-x}}   =   \frac{e^x}{1+e^x}$$
+
+P(x) is the probability of the dependent variable equaling a success. The function is as such because the range of p(x) should be between 0 to 1, rather than -infinity to +infinity. This function provides a limited range of values for probability, so the odds of the probability must be taken next to fully convert this logistic function into a logistic regression. %The graph for a logistic function is shown below, note how it extends across the y-axis: (insert graph)
+
+\subsection{Logistic Regression} 
+The logistic regression is the natural log of the inverse of the logistic function. The core of logistic regression is estimating the log odds of an event, also known as the logit of the probability, where the log odds is a prediction of the odds of a dependent variable based on one or more binary or real valued independent predictors/x-values.
+
+The odds are determined by the inverse of the logistic function, where the probability of an outcome’s success (Y) is divided by the probability that it will not occur (1-Y). To determine the log-odds of an event occurring, we must take the natural log of this inverse. The purpose of this is to fit the logit of the probability of success with the predictors/x-values. We are then able to obtain a continuous predictor for the odds of an event happening.
+
+$$logit p(x) = ln[\frac{p(x)}{1-p(x)}]$$
+
+The logit serves as a link between the linear regression and logistic function. The probability of success of obtaining a particular value from a binary dependent is equivalent to the odds of the dependent variable Y equaling a particular case.
+
+$$ln[\frac{Y}{1-Y}] = b_0 + bX$$
+
+Logistic regression seeks to find the equation that best predicts the value of Y for each value of X. The Y variable in logistic regression is the probability of obtaining a particular value of a binary variable, whereas the Y variable in linear regression is measured directly. %The graph for a logistic regression is shown below, note how the values are between 0 and 1 and are measured continuously: (insert graph)
+
 
 \section{LITERATURE SURVEY}
 
 We researched a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regression.
 
 \subsection{What have the others do to solve this problem}
-Add stuff
+Others have parallelized the logistic regression in terms of machine learning problems and have looked at parallelized regressions in MATLAB, Spark and another framework that is used often in machine learning.
 
 \subsection{What are the pros and cons of this previous work}
-Add stuff
+This research only looks at parallelizing linear regression on very specific platforms, which is good for machine learning but isn’t applicable to all the other fields that utilize the regression. We aim to parallelize the logistic regression in terms of how a scientist would use it, as well as how a data scientist would use it. Since data science is applicable to every field, this makes our work more accessible. 
 
 \subsection{Implementations from others that we’ve used or referenced} 
 Add stuff
 
-\subsection{Units}
-
-\begin{itemize}
-
-\item blank
-\item blank
-\item blank
-\item Use a zero before decimal points: Ò0.25Ó, not Ò.25Ó. Use Òcm3Ó, not ÒccÓ. (bullet list)
-
-\end{itemize}
-
-
-\subsection{Equations}
-
-
-$$
-\alpha + \beta = \chi \eqno{(1)}
-$$
-
-Note that the equation is centered using a center tab stop. Be sure that the symbols in your equation have been defined before or immediately following the equation. Use Ò(1)Ó, not ÒEq. (1)Ó or Òequation (1)Ó, except at the beginning of a sentence: ÒEquation (1) is . . .Ó
-
-\begin{itemize}
-
-
-\item blank
-\item blank
-\item blank
-\item blank
-
-\end{itemize}
-
 
 \section{PROPOSED SOLUTION}
-We propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. This will allow researchers to 
+We propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. This will allow researchers to analyze more data in less time. 
 
 \section{EXPERIMENTAL SETUP}
 For our experiment, we are using a binary logistic regression, where we are dealing with a dependent variable that can only be either 0 or 1, whereas our independent variables are real numbers. To make sure our generated data set was good, we followed the assumptions of data used for logistic regression applications such as that the dependent variable is binary, there are no outliers in the data or strong correlations between independent data sets and that there were no values present in the data that were below -3.29 or above 3.29(https://www.statisticssolutions.com/what-is-logistic-regression/). 
