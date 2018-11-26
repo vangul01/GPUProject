@@ -1,14 +1,25 @@
 # GPUProject
 Parallelizing logistic regression and comparing it to sequential and multicore versions
 
-To compile:
-make regmatrix
+To generate random data:
+g++ generateRanData.cpp
+check output: ./a.out 100 10
 
-Execution format: 
-./regmatrix <rowNum> <colNum>
+To compile sequential logistic regression code:
+g++ 01.regressMatCUDA.00.cu
+check output: ./a.out 100 10
 
-Excecution example:
-./regmatrix 3 4
+To compile cuda logistic regression code:
+nvcc 01.regressMatCUDA.00.cu
+check output: ./a.out 100 10
 
-UPDATE THIS: *Compile with gcc-6.2.0 on courses2*
-UPDATE THIS: module load gcc-6.2.0
+load cuda 9 for cuda code:
+module load cuda-9.1
+
+*Compile on cuda2 for cuda code* 
+nvcc -o heatdist -arch=sm_60 heatdist.cu 
+OR
+*Compile on cuda5 for cuda code*
+nvcc -o heatdist -arch=sm_35 heatdist.cu
+
+*Compile on snappy3 for sequential code*
