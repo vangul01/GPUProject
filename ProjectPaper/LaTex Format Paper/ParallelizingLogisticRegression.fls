@@ -85,8 +85,10 @@ INPUT /usr/local/texlive/2017/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm
 INPUT ParallelizingLogisticRegression.aux
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb
+INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb
+INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb
 INPUT /usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb

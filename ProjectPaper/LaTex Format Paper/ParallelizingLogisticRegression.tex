@@ -87,14 +87,15 @@ In order to do a logistic regression, we must first start with a linear regressi
 
 $$Y = b_0 + b_1X_1 + b_2X_2 + b_nX_n$$
 
-In this linear model, the x’s are the predictors/independent variables and the Bn’s are the parameters of the model, with $b_0$ being a constant term. The Y value is the outcome /dependent variable and can vary from negative to positive infinity for a linear regression. %The graph for a linear regression is shown below, note how it can extend infinitely in both directions: (insert graph)
+In this linear model, the x’s are the predictors/independent variables and the Bn’s are the parameters of the model or the coefficients of the independent variables, with $b_0$ being a constant term. The Y value is the outcome /dependent variable and can vary from negative to positive infinity for a linear regression.  %The graph for a linear regression is shown below, note how it can extend infinitely in both directions: (insert graph)
 
 \subsection{Logistic Function}
 The next step is to turn the linear regression into a sigmoid function, also known as a logistic function. 
 
-$$p(x) =  \frac{1}{1+e^{-x}}   =   \frac{e^x}{1+e^x}$$
+$$p(x) =  \frac{1}{1+e^{-x}}   =   \frac{e^x}{1+e^x} 
+= \frac{e^{(b_0 + b_1X_1 + ... + b_nX_n)}}{1+e^{(b_0 + b_1X_1 + ... + b_nX_n)}}$$
 
-P(x) is the probability of the dependent variable equaling a success. The function is as such because the range of p(x) should be between 0 to 1, rather than -infinity to +infinity. This function provides a limited range of values for probability, so the odds of the probability must be taken next to fully convert this logistic function into a logistic regression. %The graph for a logistic function is shown below, note how it extends across the y-axis: (insert graph)
+P(x) is the probability of the dependent variable equaling a success. E(Y) is the expected value of the binary dependent variable Y. X is the linear regression formula. The function is as such because the range of p(x) should be between 0 to 1, rather than -infinity to +infinity. This function provides a limited range of values for probability, so the odds of the probability must be taken next to fully convert this logistic function into a logistic regression. %The graph for a logistic function is shown below, note how it extends across the y-axis: (insert graph)
 
 \subsection{Logistic Regression} 
 The logistic regression is the natural log of the inverse of the logistic function. The core of logistic regression is estimating the log odds of an event, also known as the logit of the probability, where the log odds is a prediction of the odds of a dependent variable based on one or more binary or real valued independent predictors/x-values.
@@ -103,7 +104,7 @@ The odds are determined by the inverse of the logistic function, where the proba
 
 $$logit p(x) = ln[\frac{p(x)}{1-p(x)}]$$
 
-The logit serves as a link between the linear regression and logistic function. The probability of success of obtaining a particular value from a binary dependent is equivalent to the odds of the dependent variable Y equaling a particular case.
+The dependent variable turns into a logit variable (the natural log of the odds of the dependent variable occurring or not). We then estimate the probability of the occurrence of a certain event based on the independent variables. The logit serves as a link between the linear regression and logistic function. The probability of success of obtaining a particular value from a binary dependent is equivalent to the odds of the dependent variable Y equaling a particular case.
 
 $$ln[\frac{Y}{1-Y}] = b_0 + bX$$
 
@@ -111,35 +112,44 @@ Logistic regression seeks to find the equation that best predicts the value of Y
 
 
 \section{LITERATURE SURVEY}
+We've looked at a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regressions.
 
-We researched a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regression.
+\subsection{What have the others do to solve this problem and What are the pros and cons of this previous work}
+Evaluating Parallel Logistic Regression Models - liang, choi----
+Others have parallelized the logistic regression in terms of machine learning problems and have looked at parallelized regressions in distributed platform, parallel algorithm and sublunar approximation. They compared Hadoop and Spark, two distributed systems used in data science and analytics. This research compares platform/algorithm combinations with sub-linear algorithms specific to machine learning, which is useful for machine learning but isn’t applicable to all the other fields that utilize the regression. They also focused on parallelizing machine learning algorithms, while we are looking to parallelize logistic regression itself. We aim to parallelize the logistic regression in terms of how a scientist would use it, as well as how a data scientist would use it. Since data science is applicable to every field, this makes our work more accessible. They did use five open datasets though related to machine learning to make sure that they could accurately compare their methods. Our data is randomly generated and doesn’t come from open source. 
 
-\subsection{What have the others do to solve this problem}
-Others have parallelized the logistic regression in terms of machine learning problems and have looked at parallelized regressions in MATLAB, Spark and another framework that is used often in machine learning.
+Deforestation modelling using logistic regression and GIS----
+This paper uses logistic regression in the manner that we intend to use and parallelize it. The pros are that they analyze a sequential version of the logistic regression, however, they don’t attempt to parallelize the logistic regression and their input data is in a much different format than ours. The R2 calculated in their paper also doesn’t provide much information about the scatter of the data around the fitted line. They also look at binary logistic regression, determining whether deforestation is present or not in an area based on slope as an independent variable. The setup of their research is very similar to ours, and is the paper that we decided to base parallelizing logistic regression on. However, their data input is far different than ours in that they wished to combine logistic regression with GIS. They analyze digital thematic-topographic maps with 63 different data layers such as forests, ranges and gardens. Our paper looks at a much simpler form of data, random file input values that fall within a certain range to represent our x and b values.
 
-\subsection{What are the pros and cons of this previous work}
-This research only looks at parallelizing linear regression on very specific platforms, which is good for machine learning but isn’t applicable to all the other fields that utilize the regression. We aim to parallelize the logistic regression in terms of how a scientist would use it, as well as how a data scientist would use it. Since data science is applicable to every field, this makes our work more accessible. 
+Breast Cancer Prediction by Logistic Regression with CUDA Parallel Programming Support---- 
+In this paper, there is a focus on parallelizing logistic regression for the purposes of machine learning, bioinformatics and data analysis. While it is a machine learning approach and our research aims to be more generalized, the parallelization is reached by using CUDA parallel programming support, which we use in our experimental design as well. However, not much detail is gone into about how CUDA is implemented, only that different CUDA versions of their software are compared in determining the loss function for the machine learning logistic regression.
 
 \subsection{Implementations from others that we’ve used or referenced} 
-Add stuff
+Evaluating Parallel Logistic Regression Models - liang, choi----
+They implement a binary logistic regression as well, and we use the parallel algorithm approach but no distributed platform or sub-linear approximation. They also analyze their experimental results in accuracy, efficiency, scalability and robustness, as well as running time, which is what we look at in our analysis as well.  
+Deforestation modelling using logistic regression and GIS----
+From this work, we use a similar logistic regression and we also broke down our implementation first into linear regression, then logistic function and finally into logistic regression. They use $R^2$ to determine the fitness of the model, which is something we do too in order to make sure our randomly generated data makes sense. 
 
 
 \section{PROPOSED SOLUTION}
-We propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. This will allow researchers to analyze more data in less time. 
+There has been a lot of research on parallelizing logistic regression for machine learning techniques and algorithms, but nothing that we’ve seen that is general enough to cover parallelized logistic regression outside of machine learning purposes. We propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. This will allow researchers to analyze more data in less time. We are attempting a general parallelization of logistic regression, where our work can benefit all fields that utilize logistic regression. From our research, we haven’t found others who attempt to parallelize a general logistic regression. From our work we wish to show that logistic regression is parallelizable enough to offer increased data sets to analyze in lesser time than the sequential counterpart. 
 
 \section{EXPERIMENTAL SETUP}
-For our experiment, we are using a binary logistic regression, where we are dealing with a dependent variable that can only be either 0 or 1, whereas our independent variables are real numbers. To make sure our generated data set was good, we followed the assumptions of data used for logistic regression applications such as that the dependent variable is binary, there are no outliers in the data or strong correlations between independent data sets and that there were no values present in the data that were below -3.29 or above 3.29(https://www.statisticssolutions.com/what-is-logistic-regression/). 
 
-Another consideration we had to take into account was the model fit, having more independent variables increases the amount of variance ($$R^2$$) but adding too many variables will decrease the generalizability of the predictive analytic, rendering it less accurate. To analyze the accuracy of our logistic regression, we computed its goodness-of-fit based on the Chi square test, as well as the amount of variance $$R^2$$.  
+\subsection{Assumptions}
+For our experiment, we are using a binary logistic regression, where we are dealing with a dependent variable that can only be either 0 or 1, whereas our independent variables are real numbers. To make sure our generated data set was good, we followed the assumptions of data used for logistic regression applications such as that the dependent variable is binary, there are no outliers in the data or strong correlations between independent data sets and that there were no values present in the data that were below -3.29 or above 3.29. (https://www.statisticssolutions.com/what-is-logistic-regression/). Another consideration we had to take into account was the model fit, having more independent variables increases the amount of variance ($R^2$) but adding too many variables will decrease the generalizability of the predictive analytic, rendering it less accurate. To analyze the accuracy of our logistic regression, we computed its goodness-of-fit based on the Chi square test, as well as the amount of variance $R^2$. 
 
-Logistic regression model is useful in determining the relationship between a random value and its covariants, so our data was randomly generated values and we looked to find a dependent Y.
+\subsection{Data Collection and Code}
+The logistic regression model is useful in determining the relationship between a random value and its covariants. Therefore, our first step was to create a file of random generated values that fit the assumptions of input data of logistic regression. We used randomly generated values for our input and found a dependent Y according to these values. This ascertained that the independent x-variables are independent within themselves, one of the assumptions needed for data used in a logistic regression. The B values are produced by the regression data program. From this data, we populate an array of new X values which, along with the B values, will give us a predicted Y value. 
 
-We first coded a sequential version of a linear regression and then modified it to be a logistic regression. 
+From our output file of x by y values, we ran the data to be processed to find the predicted Y value for the sequential version of the logistic regression and the parallelized version of the logistic regression. We coded a sequential version of a linear regression and then modified it to be a logistic regression based on the steps in the background section. We then parallelized the code where we could, such as for matrix multiplication and for calculating the inverse of a matrix. 
 
+\subsection{Machine Setup}
 
-\subsection{blank}
+We used NYU linux CIMS accounts to run our code. We ssh'ed into cuda5 and cuda2 machines, which run cuda version 9 (?) and we loaded the cuda version 9 module. We used ./time to record the time taken to compute the logistic regression of our sequential code and CUDA code, and we used nvprof to further profile our CUDA code. 
 
-blank
+\section{RESULTS AND DISCUSSION}
+Add stuff...
 
 \subsection{Figures and Tables}
 
@@ -174,13 +184,9 @@ Three & Four\\
 Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather than symbols or abbreviations when writing Figure axis labels to avoid confusing the reader. As an example, write the quantity ÒMagnetizationÓ, or ÒMagnetization, MÓ, not just ÒMÓ. If including units in the label, present them within parentheses. Do not label axes only with units. In the example, write ÒMagnetization (A/m)Ó or ÒMagnetization {A[m(1)]}Ó, not just ÒA/mÓ. Do not label axes with a ratio of quantities and units. For example, write ÒTemperature (K)Ó, not ÒTemperature/K.Ó
 
 
-\section{RESULTS AND DISCUSSION}
-add stuff
-
 \section{CONCLUSIONS}
 
-A conclusion section is not required. Although a conclusion may review the main points of the paper, do not replicate the abstract as the conclusion. A conclusion might elaborate on the importance of the work or suggest 
-applications and extensions. 
+Summary of what we found, why its useful, future implementations or things we'd do or change.
 
 \begin{itemize}
 
@@ -212,7 +218,7 @@ applications and extensions.
 
 \section*{ACKNOWLEDGMENT}
 
-Thanks to Professor Zahran for all your help.
+Thank you Professor Zahran for all your help.
 
 \begin{thebibliography}{99}
 
