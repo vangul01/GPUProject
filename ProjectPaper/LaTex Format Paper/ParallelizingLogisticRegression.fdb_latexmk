@@ -1,5 +1,5 @@
 # Fdb version 3
-["pdflatex"] 1543280703 "ParallelizingLogisticRegression.tex" "ParallelizingLogisticRegression.pdf" "ParallelizingLogisticRegression" 1543280704
+["pdflatex"] 1544047023 "ParallelizingLogisticRegression.tex" "ParallelizingLogisticRegression.pdf" "ParallelizingLogisticRegression" 1544047024
   "/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc" 1480098666 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/local/texlive/2017/texmf-dist/fonts/map/fontname/texfonts.map" 1480098670 3287 e6b82fe08f5336d4d5ebc73fb1152e87 ""
   "/usr/local/texlive/2017/texmf-dist/fonts/tfm/adobe/times/ptmb7t.tfm" 1480098689 2172 fd0c924230362ff848a33632ed45dc23 ""
@@ -42,10 +42,10 @@
   "/usr/local/texlive/2017/texmf-var/fonts/map/pdftex/updmap/pdftex.map" 1495593472 2350277 a699055bee05bf8a40b0504752487295 ""
   "/usr/local/texlive/2017/texmf-var/web2c/pdftex/pdflatex.fmt" 1495593487 4129592 0e6cfee100d68e6d96b92c0258f2ff73 ""
   "/usr/local/texlive/2017/texmf.cnf" 1495593465 577 2b71d4d888f9e5560b2e99985915a9fa ""
-  "ParallelizingLogisticRegression.aux" 1543280703 2170 b47f6d31b4f3f560a22339549f9417de ""
-  "ParallelizingLogisticRegression.tex" 1543280702 24156 1f97a1c0b3f2f4aba01892bfc743c173 ""
-  "ieeeconf.cls" 1542554799 197436 33af3dd5069be3a823450cf46fa3facf ""
+  "ParallelizingLogisticRegression.aux" 1544047023 2025 2f2acc1c5e3e8b5f848728e2f1947348 ""
+  "ParallelizingLogisticRegression.tex" 1544047022 25947 44c4386fcf855bbc80b5b97841e32eed ""
+  "ieeeconf.cls" 1543296783 197436 33af3dd5069be3a823450cf46fa3facf ""
   (generated)
-  "ParallelizingLogisticRegression.aux"
-  "ParallelizingLogisticRegression.pdf"
   "ParallelizingLogisticRegression.log"
+  "ParallelizingLogisticRegression.pdf"
+  "ParallelizingLogisticRegression.aux"

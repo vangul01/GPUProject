@@ -112,41 +112,42 @@ Logistic regression seeks to find the equation that best predicts the value of Y
 
 
 \section{LITERATURE SURVEY}
-We've looked at a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regressions.
+We've looked at a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regressions. The following related works are presented because they either implement a biostatistic(?) model of logistic regression or they compare sequential and parallel versions of logistic regression. 
 
-\subsection{What have the others do to solve this problem and What are the pros and cons of this previous work}
-Evaluating Parallel Logistic Regression Models - liang, choi----
-Others have parallelized the logistic regression in terms of machine learning problems and have looked at parallelized regressions in distributed platform, parallel algorithm and sublunar approximation. They compared Hadoop and Spark, two distributed systems used in data science and analytics. This research compares platform/algorithm combinations with sub-linear algorithms specific to machine learning, which is useful for machine learning but isn’t applicable to all the other fields that utilize the regression. They also focused on parallelizing machine learning algorithms, while we are looking to parallelize logistic regression itself. We aim to parallelize the logistic regression in terms of how a scientist would use it, as well as how a data scientist would use it. Since data science is applicable to every field, this makes our work more accessible. They did use five open datasets though related to machine learning to make sure that they could accurately compare their methods. Our data is randomly generated and doesn’t come from open source. 
+\subsection{Biostatistic Logistic Regression}
+The algorithm that we have coded sequential and parallel versions of is applicable to biology and environmental studies. The work done by (Deforestation modelling using logistic regression and GIS) uses logistic regression in the manner that we implement and parallelize. In their work, they(NAMES!) look at binary logistic regression, determining whether deforestation is present or not in an area based on slope as an independent variable. The setup of the experiment is similar to ours, and their work is what drove us to parallelize logistic regression for scientific fields. While they analyze a sequential version of the logistic regression, there is no attempt to parallelize it. The data input is also far different than ours, where the focus is to use GIS with logistic regression, making comparison with their work difficult. They(NAMES!) analyze digital thematic-topographic maps with 63 different data layers such as forests, ranges and gardens. Our tests read data from a file containing random input values that fall within a certain range to represent our x and b values, rather than topographic maps or open source data.
 
-Deforestation modelling using logistic regression and GIS----
-This paper uses logistic regression in the manner that we intend to use and parallelize it. The pros are that they analyze a sequential version of the logistic regression, however, they don’t attempt to parallelize the logistic regression and their input data is in a much different format than ours. The R2 calculated in their paper also doesn’t provide much information about the scatter of the data around the fitted line. They also look at binary logistic regression, determining whether deforestation is present or not in an area based on slope as an independent variable. The setup of their research is very similar to ours, and is the paper that we decided to base parallelizing logistic regression on. However, their data input is far different than ours in that they wished to combine logistic regression with GIS. They analyze digital thematic-topographic maps with 63 different data layers such as forests, ranges and gardens. Our paper looks at a much simpler form of data, random file input values that fall within a certain range to represent our x and b values.
+\subsection{Parallelizing Logistic Regression}
+Others, such as (NAMES liang, choi)(Evaluating Parallel Logistic Regression Models citation!), have parallelized the logistic regression for machine learning. Liang et. all(?) have looked at parallelized regressions in distributed platforms, parallel algorithms and sub-linear approximations. They worked with Hadoop and Spark, two distributed systems used in data science and analytics, to run sequential and parallel versions of code and compare platform/algorithm combinations with sub-linear algorithms specific to machine learning. This is clearly useful for machine learning but is not applicable to other fields that utilize logistic regression. Liang et all focus on parallelizing machine learning algorithms, while we are looking to parallelize logistic regression itself. They used five open datasets related to machine learning to make sure that they could accurately compare their methods whereas our data is randomly generated and doesn’t come from open source. Using open datasets are beneficial because the results allow for comparability with the performance of sequential machine learning algorithms that already exist. 
 
-Breast Cancer Prediction by Logistic Regression with CUDA Parallel Programming Support---- 
-In this paper, there is a focus on parallelizing logistic regression for the purposes of machine learning, bioinformatics and data analysis. While it is a machine learning approach and our research aims to be more generalized, the parallelization is reached by using CUDA parallel programming support, which we use in our experimental design as well. However, not much detail is gone into about how CUDA is implemented, only that different CUDA versions of their software are compared in determining the loss function for the machine learning logistic regression.
+The work done by (NAMES) in (Breast Cancer Prediction by Logistic Regression with CUDA Parallel Programming Support)(CITE) focuses on parallelizing logistic regression for the purposes of machine learning, bioinformatics and data analysis. While it is primarily a machine learning approach and our work aims to be more generalized, the parallelization is reached by using CUDA parallel programming support, which we use in our experimental design as well. However, not much detail is gone into about how CUDA is implemented, only that different CUDA software versions are compared in determining the loss function for the machine learning logistic regression. Nevertheless, this work is useful in that it this approach is applicable to bioinformatics and data analysis. The dataset used is a real dataset containing anonymized patient information obtained from the Wisconsin Diagnostic Breast Cancer database. It contains 569 instances, with each instance corresponding to a patient (CITE!!!). This is beneficial in that the results obtained can be tested in real life, and they are. From the estimated Y values obtained per patient, there was a better chance at predicting whether a patient had breast cancer or not.  
 
-\subsection{Implementations from others that we’ve used or referenced} 
-Evaluating Parallel Logistic Regression Models - liang, choi----
-They implement a binary logistic regression as well, and we use the parallel algorithm approach but no distributed platform or sub-linear approximation. They also analyze their experimental results in accuracy, efficiency, scalability and robustness, as well as running time, which is what we look at in our analysis as well.  
-Deforestation modelling using logistic regression and GIS----
-From this work, we use a similar logistic regression and we also broke down our implementation first into linear regression, then logistic function and finally into logistic regression. They use $R^2$ to determine the fitness of the model, which is something we do too in order to make sure our randomly generated data makes sense. 
+
+\subsection{Implementations Used or Referenced} 
+In Evaluating Parallel Logistic Regression Models (CITE), Liang and Choi implement a binary logistic regression, and we reference the parallel algorithm approach, but without the distributed platform or sub-linear approximation. They analyze their experimental results in accuracy, efficiency, scalability, robustness and running time. We analyze our results in terms of accuracy and running time and use this work as a reference on how to proceed with such an analysis. 
+
+From (NAME et. all’s) work in Deforestation modelling using logistic regression and GIS, we use a similar logistic regression and proceed with the sequential code and then the parallelized code in a step-by-step approach as well. We break down our implementation into linear regression, then logistic function and finally into logistic regression in order to code logistic regression. (NAMES) use $R^2$ chi square test(?) to determine the fitness of their model, which is something we consider in our work but did not have enough time to do.
 
 
 \section{PROPOSED SOLUTION}
-There has been a lot of research on parallelizing logistic regression for machine learning techniques and algorithms, but nothing that we’ve seen that is general enough to cover parallelized logistic regression outside of machine learning purposes. We propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. This will allow researchers to analyze more data in less time. We are attempting a general parallelization of logistic regression, where our work can benefit all fields that utilize logistic regression. From our research, we haven’t found others who attempt to parallelize a general logistic regression. From our work we wish to show that logistic regression is parallelizable enough to offer increased data sets to analyze in lesser time than the sequential counterpart. 
+We aim to parallelize the logistic regression as applied to biology and data science by using CUDA. There has been a lot of research on parallelizing logistic regression for machine learning techniques and algorithms, but nothing that we’ve seen that is general enough to cover parallelized logistic regression outside of machine learning purposes. The biostatistic research that we have come across uses sequential logistic regression with other new technologies but does not attempt to parallelize the logistic regression itself. From our research, we haven’t found others who attempt to parallelize a general logistic regression using CUDA. Therefore, we propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. The purpose of this is to show that logistic regression can be parallelized and used to analyze more data in less time.
 
 \section{EXPERIMENTAL SETUP}
 
 \subsection{Assumptions}
 For our experiment, we are using a binary logistic regression, where we are dealing with a dependent variable that can only be either 0 or 1, whereas our independent variables are real numbers. To make sure our generated data set was good, we followed the assumptions of data used for logistic regression applications such as that the dependent variable is binary, there are no outliers in the data or strong correlations between independent data sets and that there were no values present in the data that were below -3.29 or above 3.29. (https://www.statisticssolutions.com/what-is-logistic-regression/). Another consideration we had to take into account was the model fit, having more independent variables increases the amount of variance ($R^2$) but adding too many variables will decrease the generalizability of the predictive analytic, rendering it less accurate. To analyze the accuracy of our logistic regression, we computed its goodness-of-fit based on the Chi square test, as well as the amount of variance $R^2$. 
 
-\subsection{Data Collection and Code}
-The logistic regression model is useful in determining the relationship between a random value and its covariants. Therefore, our first step was to create a file of random generated values that fit the assumptions of input data of logistic regression. We used randomly generated values for our input and found a dependent Y according to these values. This ascertained that the independent x-variables are independent within themselves, one of the assumptions needed for data used in a logistic regression. The B values are produced by the regression data program. From this data, we populate an array of new X values which, along with the B values, will give us a predicted Y value. 
+\subsection{Methods}
+How we parallelized the code step by step
 
-From our output file of x by y values, we ran the data to be processed to find the predicted Y value for the sequential version of the logistic regression and the parallelized version of the logistic regression. We coded a sequential version of a linear regression and then modified it to be a logistic regression based on the steps in the background section. We then parallelized the code where we could, such as for matrix multiplication and for calculating the inverse of a matrix. 
+\subsection{Data Collection and Code}
+The logistic regression model is useful in determining the relationship between a random value and its covariants. Therefore, our first step was to create a file of random generated values that fit the assumptions of input data of logistic regression. We used randomly generated values for our input with the purpose of finding Y values according to these values. This ascertained that the independent x-variables are independent within themselves, one of the assumptions needed for data used in a logistic regression. The B values are produced by the regression data program. From this data, we populate an array of new X values which, along with the B values, will give us a predicted Y value. 
+
+From our output file of x by y values, we ran the data to be processed to find the predicted Y value for the sequential version of the logistic regression and the parallelized version of the logistic regression. We coded a sequential version of a linear regression and then modified it to be a logistic regression based on the steps in the background section. We then parallelized the code where we could, such as for matrix multiplication and calculating the inverse of a matrix. 
 
 \subsection{Machine Setup}
 
-We used NYU linux CIMS accounts to run our code. We ssh'ed into cuda5 and cuda2 machines, which run cuda version 9 (?) and we loaded the cuda version 9 module. We used ./time to record the time taken to compute the logistic regression of our sequential code and CUDA code, and we used nvprof to further profile our CUDA code. 
+We used NYU linux CIMS accounts to run our sequential and parallelized logistic regression code. Before running the sequential and parallelized code, we made sure to generate the random data files that we needed to run our code with. To run the parallelized code, we used the cuda5 machine on the NYU prince cluster and loaded the cuda version 9.1 module. For the sequential code, we used the snappy machine on NYU’s prince cluster to obtain faster results for sequential code. We used the time flag to record time taken to compute the logistic regression of our sequential code and CUDA code, and we used nvprof to profile our CUDA code. 
 
 \section{RESULTS AND DISCUSSION}
 Add stuff...
@@ -222,30 +223,47 @@ Thank you Professor Zahran for all your help.
 
 \begin{thebibliography}{99}
 
-\bibitem{c1} G. O. Young, ÒSynthetic structure of industrial plastics (Book style with paper title and editor),Ó 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 15Ð64.
-\bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123Ð135.
-\bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
-\bibitem{c4} B. Smith, ÒAn approach to graphs of linear forms (Unpublished work style),Ó unpublished.
-\bibitem{c5} E. H. Miller, ÒA note on reflector arrays (Periodical styleÑAccepted for publication),Ó IEEE Trans. Antennas Propagat., to be publised.
-\bibitem{c6} J. Wang, ÒFundamentals of erbium-doped fiber amplifiers arrays (Periodical styleÑSubmitted for publication),Ó IEEE J. Quantum Electron., submitted for publication.
-\bibitem{c7} C. J. Kaufman, Rocky Mountain Research Lab., Boulder, CO, private communication, May 1995.
-\bibitem{c8} Y. Yorozu, M. Hirano, K. Oka, and Y. Tagawa, ÒElectron spectroscopy studies on magneto-optical media and plastic substrate interfaces(Translation Journals style),Ó IEEE Transl. J. Magn.Jpn., vol. 2, Aug. 1987, pp. 740Ð741 [Dig. 9th Annu. Conf. Magnetics Japan, 1982, p. 301].
-\bibitem{c9} M. Young, The Techincal Writers Handbook.  Mill Valley, CA: University Science, 1989.
-\bibitem{c10} J. U. Duncombe, ÒInfrared navigationÑPart I: An assessment of feasibility (Periodical style),Ó IEEE Trans. Electron Devices, vol. ED-11, pp. 34Ð39, Jan. 1959.
-\bibitem{c11} S. Chen, B. Mulgrew, and P. M. Grant, ÒA clustering technique for digital communications channel equalization using radial basis function networks,Ó IEEE Trans. Neural Networks, vol. 4, pp. 570Ð578, July 1993.
-\bibitem{c12} R. W. Lucky, ÒAutomatic equalization for digital communication,Ó Bell Syst. Tech. J., vol. 44, no. 4, pp. 547Ð588, Apr. 1965.
-\bibitem{c13} S. P. Bingulac, ÒOn the compatibility of adaptive controllers (Published Conference Proceedings style),Ó in Proc. 4th Annu. Allerton Conf. Circuits and Systems Theory, New York, 1994, pp. 8Ð16.
-\bibitem{c14} G. R. Faulhaber, ÒDesign of service systems with priority reservation,Ó in Conf. Rec. 1995 IEEE Int. Conf. Communications, pp. 3Ð8.
-\bibitem{c15} W. D. Doyle, ÒMagnetization reversal in films with biaxial anisotropy,Ó in 1987 Proc. INTERMAG Conf., pp. 2.2-1Ð2.2-6.
-\bibitem{c16} G. W. Juette and L. E. Zeffanella, ÒRadio noise currents n short sections on bundle conductors (Presented Conference Paper style),Ó presented at the IEEE Summer power Meeting, Dallas, TX, June 22Ð27, 1990, Paper 90 SM 690-0 PWRS.
-\bibitem{c17} J. G. Kreifeldt, ÒAn analysis of surface-detected EMG as an amplitude-modulated noise,Ó presented at the 1989 Int. Conf. Medicine and Biological Engineering, Chicago, IL.
-\bibitem{c18} J. Williams, ÒNarrow-band analyzer (Thesis or Dissertation style),Ó Ph.D. dissertation, Dept. Elect. Eng., Harvard Univ., Cambridge, MA, 1993. 
-\bibitem{c19} N. Kawasaki, ÒParametric study of thermal and chemical nonequilibrium nozzle flow,Ó M.S. thesis, Dept. Electron. Eng., Osaka Univ., Osaka, Japan, 1993.
-\bibitem{c20} J. P. Wilkinson, ÒNonlinear resonant circuit devices (Patent style),Ó U.S. Patent 3 624 12, July 16, 1990. 
+%%%%%Chicago citation style
+
+\bibitem{c1} Bavaghar, M. Pir. "Deforestation Modelling Using Logistic Regression and GIS." Journal of Forest Science 61, no. No. 5 (2016): 193-99. 
+
+\bibitem{c2} Peng, Haoruo, Ding Liang, and Cyrus Choi. "Evaluating Parallel Logistic Regression Models." 2013 IEEE International Conference on Big Data, 2013. 
+
+\bibitem{c3} Peretti, Alessandro, and Francesco Amenta. "Breast Cancer Prediction by Logistic Regression with CUDA Parallel Programming Support." Breast Cancer: Current Research 01, no. 03 (2016).
+
+\bibitem{c4} Salame, Camil Wadih, Joaquim Carlos Barbosa Queiroz, Gilberto De Miranda Rocha, Mario Miguel Amin, and Edson Paulino Da Rocha. "Use of Spatial Regression Models in the Analysis of Burnings and Deforestation Occurrences in Forest Region, Amazon, Brazil." Environmental Earth Sciences 75, no. 3 (2016). 
+
+\bibitem{c5} Singh, Sameer, Jeremy Kubica, Scott Larsen, and Daria Sorokina. "Parallel Large Scale Feature Selection for Logistic Regression." Proceedings of the 2009 SIAM International Conference on Data Mining, 2009, 1172-183. 
+
+\bibitem{c6} Sperandei, Sandro. "Understanding Logistic Regression Analysis." Biochemia Medica, 2014, 12-18.
+
+\bibitem{c7} Van, Phu Nguyen, and Théophile Azomahou. "Nonlinearities and Heterogeneity in Environmental Quality: An Empirical Analysis of Deforestation." Journal of Development Economics 84, no. 1 (2007): 291-309. 
 
 
 
+%%APA citation
+%\bibitem{c1} Bavaghar, M. P. (2016). Deforestation modelling using logistic regression and GIS. Journal of Forest Science, 61(No. 5), 193-199.
 
+%\bibitem{c2} Peng, H., Liang, D., & Choi, C. (2013). Evaluating parallel logistic regression models. 2013 IEEE International Conference on Big Data. 
+
+%\bibitem{c3} Peretti, A., & Amenta, F. (2016). Breast Cancer Prediction by Logistic Regression with CUDA Parallel Programming Support. Breast Cancer: Current Research, 01(03).
+
+%\bibitem{c4} Salame, C. W., Queiroz, J. C., Rocha, G. D., Amin, M. M., & Rocha, E. P. (2016). Use of spatial regression models in the analysis of burnings and deforestation occurrences in forest region, Amazon, Brazil. Environmental Earth Sciences, 75(3).
+
+%\bibitem{c5} Singh, S., Kubica, J., Larsen, S., & Sorokina, D. (2009). Parallel Large Scale Feature Selection for Logistic Regression. Proceedings of the 2009 SIAM International Conference on Data Mining, 1172-1183. 
+
+%\bibitem{c6} Sperandei, S. (2014). Understanding logistic regression analysis. Biochemia Medica, 12-18.
+
+%\bibitem{c7} Van, P. N., & Azomahou, T. (2007). Nonlinearities and heterogeneity in environmental quality: An empirical analysis of deforestation. Journal of Development Economics, 84(1), 291-309. 
+
+%%%%%%%%%%%%%%%%%% default examples
+%\bibitem{c1} G. O. Young, ÒSynthetic structure of industrial plastics (Book style with paper title and editor),Ó 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 1564.
+%\bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123Ð135.
+%\bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
+%\bibitem{c4} B. Smith, ÒAn approach to graphs of linear forms (Unpublished work style),Ó unpublished.
+%\bibitem{c5} E. H. Miller, ÒA note on reflector arrays (Periodical styleÑAccepted for publication),Ó IEEE Trans. Antennas Propagat., to be publised.
+%\bibitem{c6} J. Wang, ÒFundamentals of erbium-doped fiber amplifiers arrays (Periodical styleÑSubmitted for publication),Ó IEEE J. Quantum Electron., submitted for publication.
+%\bibitem{c7} C. J. Kaufman, Rocky Mountain Research Lab., Boulder, CO, private communication, May 1995.
 
 
 \end{thebibliography}
