@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  5 DEC 2018 16:57
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  6 DEC 2018 00:37
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -154,14 +154,36 @@ Missing character: There is no ™ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ¦ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ¦ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no ’ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 163.
+(Font)              <8> on input line 162.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 163.
+(Font)              <6> on input line 162.
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no ’ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
@@ -194,7 +216,7 @@ Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no ’ in font ptmr7t!
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no “ in font ptmr7t!
- [3]
+[3]
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no © in font ptmr7t!
 
@@ -215,7 +237,7 @@ Before submitting the final camera ready copy, remember to:
 Here is how much of TeX's memory you used:
  832 strings out of 492995
  13881 string characters out of 6132704
- 75337 words of memory out of 5000000
+ 76337 words of memory out of 5000000
  4452 multiletter control sequences out of 15000+600000
  37499 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
@@ -233,7 +255,7 @@ m/cmsy7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmb8a.pf
 b></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/l
 ocal/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texli
 ve/2017/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on ParallelizingLogisticRegression.pdf (4 pages, 129817 bytes).
+Output written on ParallelizingLogisticRegression.pdf (4 pages, 130247 bytes).
 PDF statistics:
  66 PDF objects out of 1000 (max. 8388607)
  47 compressed objects within 1 object stream
