@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  19 DEC 2018 14:43
+This is pdfTeX, Version 3.14159265-2.6-1.40.18 (TeX Live 2017) (preloaded format=pdflatex 2017.5.23)  19 DEC 2018 15:46
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -131,7 +131,11 @@ Package: ltxcmds 2016/05/16 v1.23 LaTeX kernel commands for general use (HO)
 \Gin@req@height=\dimen113
 \Gin@req@width=\dimen114
 )
-(./ParallelizingLogisticRegression.aux)
+(./ParallelizingLogisticRegression.aux
+
+LaTeX Warning: Label `seq_ex' multiply defined.
+
+)
 \openout1 = `ParallelizingLogisticRegression.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 57.
@@ -146,8 +150,7 @@ LaTeX Font Info:    Checking defaults for OMX/cmex/m/n on input line 57.
 LaTeX Font Info:    ... okay on input line 57.
 LaTeX Font Info:    Checking defaults for U/cmr/m/n on input line 57.
 LaTeX Font Info:    ... okay on input line 57.
-
-(/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
+ (/usr/local/texlive/2017/texmf-dist/tex/context/base/mkii/supp-pdf.mkii
 [Loading MPS to PDF converter (version 2006.09.02).]
 \scratchcounter=\count92
 \scratchdimen=\dimen115
@@ -259,9 +262,6 @@ Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
-Missing character: There is no ™ in font ptmr7t!
-Missing character: There is no â in font ptmr7t!
-Missing character: There is no € in font ptmr7t!
 Missing character: There is no ¦ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
@@ -269,44 +269,51 @@ Missing character: There is no ¦ in font ptmr7t!
 Missing character: There is no â in font ptmr7t!
 Missing character: There is no € in font ptmr7t!
 Missing character: There is no ™ in font ptmr7t!
- [3]
-Missing character: There is no Ã in font ptmr7t!
-Missing character: There is no ’ in font ptmr7t!
-Missing character: There is no Ã in font ptmr7t!
-Missing character: There is no “ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ™ in font ptmr7t!
+Missing character: There is no â in font ptmr7t!
+Missing character: There is no € in font ptmr7t!
+Missing character: There is no ¦ in font ptmr7t!
+ [3] [4]
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <8> on input line 203.
+(Font)              <8> on input line 217.
 LaTeX Font Info:    External font `cmex10' loaded for size
-(Font)              <6> on input line 203.
+(Font)              <6> on input line 217.
 
-Overfull \hbox (239.05708pt too wide) in paragraph at lines 203--223
+Overfull \hbox (239.05708pt too wide) in paragraph at lines 217--234
  [] 
  []
 
-<seqcode2.png, id=24, 663.47874pt x 401.5pt>
+
+Overfull \hbox (79.56924pt too wide) in paragraph at lines 243--254
+ [] 
+ []
+
+<seqcode2.png, id=27, 663.47874pt x 401.5pt>
 File: seqcode2.png Graphic file (type png)
  <use seqcode2.png>
-Package pdftex.def Info: seqcode2.png used on input line 231.
+Package pdftex.def Info: seqcode2.png used on input line 262.
 (pdftex.def)             Requested size: 245.71811pt x 148.69357pt.
 
-<cudacolumns.png, id=26, 609.27625pt x 365.365pt>
+<cudacolumns.png, id=29, 609.27625pt x 365.365pt>
 File: cudacolumns.png Graphic file (type png)
  <use cudacolumns.png>
-Package pdftex.def Info: cudacolumns.png used on input line 240.
+Package pdftex.def Info: cudacolumns.png used on input line 270.
 (pdftex.def)             Requested size: 245.71811pt x 147.34761pt.
 
-<cudarow10.png, id=27, 611.28375pt x 370.38374pt>
+<cudarow10.png, id=30, 611.28375pt x 370.38374pt>
 File: cudarow10.png Graphic file (type png)
  <use cudarow10.png>
-Package pdftex.def Info: cudarow10.png used on input line 249.
+Package pdftex.def Info: cudarow10.png used on input line 277.
 (pdftex.def)             Requested size: 245.71811pt x 148.87991pt.
 
-<cudarow20.png, id=28, 660.4675pt x 412.54124pt>
+<cudarow20.png, id=31, 660.4675pt x 412.54124pt>
 File: cudarow20.png Graphic file (type png)
  <use cudarow20.png>
-Package pdftex.def Info: cudarow20.png used on input line 257.
+Package pdftex.def Info: cudarow20.png used on input line 284.
 (pdftex.def)             Requested size: 245.71811pt x 153.48138pt.
- [4]
+ [5 <./seqcode2.png> <./cudacolumns.png> <./cudarow10.png> <./cudarow20.png>]
 Missing character: There is no Ã in font ptmr7t!
 Missing character: There is no © in font ptmr7t!
 
@@ -321,30 +328,35 @@ Before submitting the final camera ready copy, remember to:
  uses only Type 1 fonts and that every step in the generation
  process uses the US letter (8.5in X 11in) paper size.
 
-[5 <./seqcode2.png> <./cudacolumns.png>] [6 <./cudarow10.png> <./cudarow20.png>
-] (./ParallelizingLogisticRegression.aux) ) 
+[6
+
+] (./ParallelizingLogisticRegression.aux)
+
+LaTeX Warning: There were multiply-defined labels.
+
+ ) 
 Here is how much of TeX's memory you used:
- 2112 strings out of 492995
- 33245 string characters out of 6132704
- 105817 words of memory out of 5000000
- 5662 multiletter control sequences out of 15000+600000
+ 2116 strings out of 492995
+ 33284 string characters out of 6132704
+ 107925 words of memory out of 5000000
+ 5666 multiletter control sequences out of 15000+600000
  37499 words of font info for 73 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 39i,8n,25p,1418b,281s stack positions out of 5000i,500n,10000p,200000b,80000s
-{/usr/local/texlive/2017/texmf-dist/
-fonts/enc/dvips/base/8r.enc}</usr/local/texlive/2017/texmf-dist/fonts/type1/pub
-lic/amsfonts/cm/cmmi10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/publ
-ic/amsfonts/cm/cmmi5.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public
-/amsfonts/cm/cmmi7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/a
-msfonts/cm/cmr10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/ams
-fonts/cm/cmr5.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfon
-ts/cm/cmr7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/
-cm/cmsy10.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/public/amsfonts/c
-m/cmsy7.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmb8a.pf
-b></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/utmbi8a.pfb></usr/l
-ocal/texlive/2017/texmf-dist/fonts/type1/urw/times/utmr8a.pfb></usr/local/texli
-ve/2017/texmf-dist/fonts/type1/urw/times/utmri8a.pfb>
-Output written on ParallelizingLogisticRegression.pdf (6 pages, 196385 bytes).
+ 39i,8n,25p,1491b,281s stack positions out of 5000i,500n,10000p,200000b,80000s
+{/usr/local/texlive/2017/texmf-dist/fonts/enc/dvips/base/8r.enc}</usr/local/t
+exlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi10.pfb></usr/local/te
+xlive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi5.pfb></usr/local/texl
+ive/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi7.pfb></usr/local/texliv
+e/2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr10.pfb></usr/local/texlive/
+2017/texmf-dist/fonts/type1/public/amsfonts/cm/cmr5.pfb></usr/local/texlive/201
+7/texmf-dist/fonts/type1/public/amsfonts/cm/cmr7.pfb></usr/local/texlive/2017/t
+exmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/local/texlive/2017/te
+xmf-dist/fonts/type1/public/amsfonts/cm/cmsy7.pfb></usr/local/texlive/2017/texm
+f-dist/fonts/type1/urw/times/utmb8a.pfb></usr/local/texlive/2017/texmf-dist/fon
+ts/type1/urw/times/utmbi8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/
+urw/times/utmr8a.pfb></usr/local/texlive/2017/texmf-dist/fonts/type1/urw/times/
+utmri8a.pfb>
+Output written on ParallelizingLogisticRegression.pdf (6 pages, 199743 bytes).
 PDF statistics:
  81 PDF objects out of 1000 (max. 8388607)
  52 compressed objects within 1 object stream
