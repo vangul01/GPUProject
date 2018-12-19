@@ -9,7 +9,7 @@
 #include <math.h>
 #include <fstream>
 #include<sstream>
-//////////s/////////
+////////////////////
 using namespace std;
 #define index(i, j, colNum)  ((i)*(colNum)) + (j)
 
@@ -17,9 +17,7 @@ using namespace std;
 int main(int argc, char *argv[]) {
 	int rowNum = atoi(argv[1]);
 	int xNum = atoi(argv[2]);
-	// int colNum = xNum + 1;
 	int colNum = xNum;
-	// float ranMatrix[rowNum*colNum];
 
 	FILE * fp;
 	char fileName[100];
@@ -36,20 +34,16 @@ int main(int argc, char *argv[]) {
 		for(int j = 0; j < colNum; j++) {
 			ranFloat = rand();
 			ranInt = (int) rand();
+			
+			//first value of each row will become Y value
 			if(j == 0) {
 				ranFloat = ranFloat/(float)(RAND_MAX);
+				//Calculate logit p(x) = ln[p(x) / 1-p(x)]
 				ranFloat = (float) log(ranFloat/(1 - ranFloat));
-				// ranFloat = ranFloat/(float)(RAND_MAX) + 1;	
-				// if(ranInt % 2 == 1) ranFloat = -1.0*ranFloat;
-
 			} else {
-				// ranFloat = ranFloat/(float)(RAND_MAX) * 10;
 				ranFloat = ranFloat/(float)(RAND_MAX) + 1;	
 				if(ranInt % 2 == 1) ranFloat = -1.0*ranFloat;
-
-			}
-
-			// ranMatrix[index(i,j,colNum)] = ranFloat;				
+			}		
 			fprintf(fp, "%f ", ranFloat );
 		}
 	}

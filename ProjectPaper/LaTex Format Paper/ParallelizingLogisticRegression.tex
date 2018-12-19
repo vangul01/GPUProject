@@ -14,7 +14,7 @@
 % See the \addtolength command later in the file to balance the column lengths
 % on the last page of the document
 
-
+\usepackage{graphicx}
 
 % The following packages can be found on http:\\www.ctan.org
 %\usepackage{graphics} % for pdf, bitmapped graphics files
@@ -149,39 +149,29 @@ For our CUDA code, we used the same logic as the sequential code but we parallel
 We used NYU linux CIMS accounts to run our sequential and parallelized logistic regression code. Before running the sequential and parallelized code, we made sure to generate the random data files that we needed to run our code with. To do this we compiled the random data program and then ran it with our specified number of rows and columns. From here, to run the parallelized code we used the cuda5 machine on the NYU prince cluster and loaded the cuda version 9.1 module. For the sequential code, we used the snappy machine on NYU’s prince cluster to obtain faster results for sequential code. We used the time flag to record time taken to compute the logistic regression of our sequential code and CUDA code, and we used nvprof to profile our CUDA code. 
 
 \section{RESULTS AND DISCUSSION}
-Add stuff...
 
-\subsection{Figures and Tables}
+For our results, we used time to obtain the real time our programs took to compute the B values. We took an average of 5 time values per column per row to obtain a more accurate time.
 
-Positioning Figures and Tables: Place figures and tables at the top and bottom of columns. Avoid placing them in the middle of columns. Large figures and tables may span across both columns. Figure captions should be below the figures; table heads should appear above the tables. Insert figures and tables after they are cited in the text. Use the abbreviation ÒFig. 1Ó, even at the beginning of a sentence.
+\subsection{Sequential Results}
+The results for our sequential code show a very small difference per change in row value (number of individuals). However, there is an increase in time with each increment of the column number, the number of independent variables, that appears to increase exponentially (Fig 1). Beyond column 12, we were unable to obtain results because time took longer than 1 hour, even when we use crunchy3 and snappy3 machines for quicker sequential computing. This limited our ability to properly compare our sequential results with our CUDA results. Differences in CUDA for column values as small as 2-12 did not provide much insight. We still obtained results for CUDA values that match sequential values. 
 
-\begin{table}[h]
-\caption{An Example of a Table}
-\label{table_example}
-\begin{center}
-\begin{tabular}{|c||c|}
-\hline
-One & Two\\
-\hline
-Three & Four\\
-\hline
-\end{tabular}
-\end{center}
-\end{table}
+Figure 1 shows that the difference between row number is very small, but the difference between column numbers with a constant row number vary exponentially. In the table CITE/MAKE THIS TABLE!!! the differences of the time between columns for a constant row number are seen. Because the values of the columns varied greatly, but the values between rows stayed close, we decided not to test more rows out. The column numbers are the independent variables, the values along the x-axis of a matrix. Through our results, the more variables that are present per row, the exponentially greater time it takes to do matrix multiplication and inverse on the data matrix. We believe this is due to the recursion present in the sequential code, particularly in calculating the matrix inversion. We believe that there is little variation among row values because in calculating logistic regression multivariable logistic regression, the data samples/individuals/rows are averaged together to find a general Y value for all samples, but the inversions and high overhead operations are being performed on the independent variables, or column values. Therefore, sequential code is able to handle a large value of rows. 
+
+We tested with row values of 10,000, 50,000 and 100,000 but received segmentation fault errors (TABLE X). However, a slow increase of time is noticed, where at row = 100,000 the time it takes to compute 2 variables per row increases by 10, compared to where row = 100. 
+
+MAKE A TABLE EXACTLY LIKE SEQUENTIAL BUT FOR CUDA. MAKE A SCATTER with Rows = 20 and plot the columns, showing how it exponentially increases. the average of 5 times per column value. This can be a log graph????
 
 
-   \begin{figure}[thpb]
-      \centering
-      \framebox{\parbox{3in}{We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
-}}
-      %\includegraphics[scale=1.0]{figurefile}
-      \caption{Inductance of oscillation winding on amorphous
-       magnetic core versus DC bias magnetic field}
-      \label{figurelabel}
-   \end{figure}
-   
+\subsection{CUDA Results}
 
-Figure Labels: Use 8 point Times New Roman for Figure labels. Use words rather than symbols or abbreviations when writing Figure axis labels to avoid confusing the reader. As an example, write the quantity ÒMagnetizationÓ, or ÒMagnetization, MÓ, not just ÒMÓ. If including units in the label, present them within parentheses. Do not label axes only with units. In the example, write ÒMagnetization (A/m)Ó or ÒMagnetization {A[m(1)]}Ó, not just ÒA/mÓ. Do not label axes with a ratio of quantities and units. For example, write ÒTemperature (K)Ó, not ÒTemperature/K.Ó
+We checked if exponential performance difference depends on column number for our parallel code, as it does with our sequential code and found that the CUDA performance does not depend on column number up to 100 (Fig 2). So we focused on the number of rows for our CUDA code. Fig 2 shows that the column number of CUDA code up to 100 has no effect on performance. For our purposes, the number of independent variables, or column number in our project, is less than around 20 in papers for biology and environmental modeling.CITE THIS. Because of this, we checked the effect of sample numbers while the column number is limited to 20. In both column number 10 and 20, the performance of CUDA code is unstable up to 1000 and 2000. After that, the performance is almost proportional to sample or row numbers (Fig 3 and Fig 4).
+
+
+\subsection{Comparing Both}
+
+For the sequential code, at column 12, the time is around 400 seconds up to 1000 rows (Fig 1). We checked cuda performance for the same condition. The time for CUDA code with a row of 1000 dramatically reduced to 0.3 seconds, making it 1333 times faster than its other values(CUDA values or sequential values?). 
+
+Currently, we are planning to compare algorithm for matrix inversion. For sequential code, we use adjoint and cofactor for matrix inversion. It has recursion which is not good for cuda code. We used Gaussian elimination to get matrix inversion. With this comparison, we can remove algorithm effect. Our row number limitation is about 100,000 ~ 20,000. We will try tiling for matrix multiplication to expand row numbers.  
 
 
 \section{CONCLUSIONS}
@@ -190,11 +180,96 @@ Summary of what we found, why its useful, future implementations or things we'd 
 
 \begin{itemize}
 
-\item final bullets 
-\item final bullets 
-\item final bullets 
-\item final bullets 
+\item recursive nature of logistic regression in sequential code greatly limits the time it takes to compute an increasing number of independent variables. 
+\item CUDA code gracefully handles a large input of independent variables but could be improved in number of sample size.
+\item In practical terms, biology and environmental science use around 20 independent variables at maximum.
+\item We would like to improve our CUDA code to make it more efficient in processing a larger sample size, such as a size of 1,000,000 individuals or more.
+\item We find that our CUDA code is adequate at processing large numbers of independent variables.
+\item We would like to balance CUDA codes processing large amounts of independent variables for the ability to process very large sample sizes.
 \end{itemize}
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ALL OF OUR FIGURES AND TABLES
+
+%\subsection{Figures and Tables}
+
+Positioning Figures and Tables: Place figures and tables at the top and bottom of columns. Avoid placing them in the middle of columns. Large figures and tables may span across both columns. Figure captions should be below the figures; table heads should appear above the tables. Insert figures and tables after they are cited in the text. Use the abbreviation ÒFig. 1Ó, even at the beginning of a sentence.
+
+\begin{table}[h]
+\centering
+\caption{Sequential code time results per row and column value. Time is in seconds, these results were obtained through snappy3 CIMS machine.}
+\label{seq_ex}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
+\hline
+Col & Row = 16 & Row = 20 & Row = 50 & Row = 100 & Row = 500 & Row = 1000 & Row = 10000 & Row = 50000 & Row = 100000\\
+\hline
+2 & 0.0168 & 0.0104 & 0.0134 & 0.0116 & 0.0106 & 0.008 & 0.016 & 0.07 & 0.146 \\
+\hline
+4 & 0.016 & 0.01 & 0.0046 & 0.0112 & 0.0104 & 0.0082 & 0.025 & 0.112 & 0.228 \\
+\hline
+6 & 0.0148 & 0.0112 & 0.0062 & 0.0134 & 0.081 & 0.0096 & 0.034 & 0.157 & 0.31 \\
+\hline
+8 & 0.031 & 0.035 & 0.0276 & 0.0364 & 0.1254 & 0.032 & 0.066 & NAN & NAN \\
+\hline
+10 & 2.5764 & 2.602 & 2.615 & 2.5568 & 2.8394 & 2.5564 & NAN & NAN & NAN \\
+\hline
+12 & 397.905 & 395.137 & 396.281 & 396.541 & 395.702 & 395.609 & NAN & NAN & NAN \\
+\hline
+\end{tabular}
+    %%  \caption{Inductance of oscillation winding on amorphous
+    %%   magnetic core versus DC bias magnetic field}
+    %\caption{Our Sequential Code}
+\end{center}
+\end{table}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+   \begin{figure}[thpb]
+      \centering
+     % \framebox{\parbox{3in} {We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
+	 %}}
+  		\includegraphics[width=\linewidth]{seqcode2.png}
+  		%\caption{Our Sequential Code}
+  		\label{fig:seq1}
+  		\caption{Sequential code performance for logistic regression with varying number of columns and rows. Each bar represents a different value for the row input, and all row values obtained are compared with column time values.}
+  	%}
+   \end{figure}
+
+	\begin{figure}[thpb]
+		\centering
+		\includegraphics[width=\linewidth]{cudacolumns.png}
+		%\caption{Our CUDA Code}
+		%\label{fig:seq1}
+
+		\caption{Performance difference of CUDA code between column number (5~20). The row number is set to 20 for all column numbers except for column = 100. The row number = 100 for column = 100.}
+	\end{figure}
+
+	\begin{figure}[thpb]
+		\centering
+		\includegraphics[width=\linewidth]{cudarow10.png}
+		%\caption{Our CUDA Code}
+		%\label{fig:seq1}
+		\caption{Performance difference of CUDA code with a constant column value of 10.}
+	\end{figure}
+
+	\begin{figure}[thpb]
+		\centering
+		\includegraphics[width=\linewidth]{cudarow20.png}
+		%\caption{Our CUDA Code}
+		%\label{fig:seq1}
+		\caption{Performance difference of CUDA code with a constant column value of 20.}
+	\end{figure}	
+
+%   \begin{figure}
+%   		\centering
+%  		\includegraphics[width=\linewidth]{sequentialcode.png}
+%  		\caption{Our Sequential Code}
+%  		\label{fig:seq1}
+%	\end{figure}
+
+%Figure \ref{fig:seq1} shows a boat.
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 \addtolength{\textheight}{-12cm}   % This command serves to balance the column lengths
                                   % on the last page of the document manually. It shortens

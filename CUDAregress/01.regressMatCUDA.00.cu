@@ -19,10 +19,6 @@ using namespace std;
 #include "0.CUDAmatCalculation.cpp"
 
 int main(int argc, char *argv[]) {
-	// double time_taken;
- //   clock_t start, end;
-
-
 	int rowNum = atoi(argv[1]);
 	int colNum = atoi(argv[2]);
 
@@ -41,26 +37,20 @@ int main(int argc, char *argv[]) {
 		}
 	}
 
-	
 	N = colNum;
 	float * tranXmulxMat = (float *) calloc(colNum*colNum, sizeof(float));
-	// matMultiplFloat(transposeX, colNum, rowNum, X, rowNum, colNum, tranXmulxMat);
 	cudaMatMultiCall(transposeX, colNum, rowNum, X, rowNum, colNum, tranXmulxMat);
 
 	// cout<<"X\'-------->"<<endl;
-	// display(transposeX, colNum, rowNum);
-
+	// display(transposeX, colNum, rowNum)
 	// cout<<"X ----------->"<<endl;
 	// display(X, rowNum, colNum);
-	
 	// cout<<"X\'X----------->"<<endl;
 	// display(tranXmulxMat, colNum, colNum);
 
-	// /////////////////////////////////////////////////////////////////////
 	float inv[N*N]; // To store inverse of A[][] 
 
 	// start = clock();
-
 	// display(tranXmulxMat, colNum, colNum);
 
 	mainInverseCuda(tranXmulxMat, colNum, inv);
@@ -70,7 +60,6 @@ int main(int argc, char *argv[]) {
 	// if (inverse(tranXmulxMat, inv)) {
 	// 	// display(inv, colNum, colNum); 
 	// }
-
 	// end = clock();
 	//cal (X'X)^-1*X'
 	// ------------

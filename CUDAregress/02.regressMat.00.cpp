@@ -40,23 +40,16 @@ int main(int argc, char *argv[]) {
 	matMultiplFloat(transposeX, colNum, rowNum, X, rowNum, colNum, tranXmulxMat);
 	// cout<<"X\'-------->"<<endl;
 	// display(transposeX, colNum, rowNum);
-
 	// cout<<"X ----------->"<<endl;
 	// display(X, rowNum, colNum);
-	
 	// cout<<"X\'X----------->"<<endl;
 	// display(tranXmulxMat, colNum, colNum);
 
-	// /////////////////////////////////////////////////////////////////////
 	float inv[N*N]; // To store inverse of A[][] 
 
 	// cout<<"The inverse is --------->"<<endl;
-	if (inverse(tranXmulxMat, inv)) {
+	//if (inverse(tranXmulxMat, inv))
 		// display(inv, colNum, colNum); 
-	}
-
-	//cal (X'X)^-1*X'
-	// ------------
 
 	float resultM[colNum*rowNum];
 	matMultiplFloat(inv, colNum, colNum, transposeX, colNum, rowNum, resultM);
