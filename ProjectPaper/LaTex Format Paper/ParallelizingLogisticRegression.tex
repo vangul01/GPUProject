@@ -15,6 +15,17 @@
 % on the last page of the document
 
 \usepackage{graphicx}
+\usepackage{caption}
+\captionsetup[table]{position=bottom}
+% Use the postscript times font!
+\usepackage{mathptmx}
+\usepackage[per-mode=symbol]{siunitx}
+\usepackage{bm}
+%\usepackage{amsmath}
+\usepackage{booktabs}
+%\renewcommand\table{Table}
+
+\usepackage{lipsum}
 
 % The following packages can be found on http:\\www.ctan.org
 %\usepackage{graphics} % for pdf, bitmapped graphics files
@@ -64,8 +75,8 @@ Parallelizing Logistic Regression for Biological Experimental Design
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\begin{abstract}
-  Logistic regression is a statistical analysis tool used as a predictive analytic in a variety of disciplines. In this paper, we focus on parallelizing binary logistic regression analysis for predictive analytics in data science for environmental science datasets. Parallelizing logistic regression would improve computation time and decrease memory latency when analyzing large data sets, allowing for more data to be processed faster. In this paper, we compare a sequential implementation of binary logistic regression with a CUDA implementation, a parallelized R implementation and a multiprocessor OpenCV version, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and less memory latency for CUDA versions of logistic regression.
+\begin{abstract} 
+Logistic regression is a statistical analysis tool used as a predictive analytic in a variety of disciplines. In this paper, we focus on parallelizing logistic regression analysis as a predictive analytic for biological experimental design. Parallelizing logistic regression would improve computation time and decrease memory latency when analyzing large data sets, allowing for more data to be processed faster. In this paper, we compare a sequential implementation of a logistic regression model with a CUDA implementation, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to performance improvements in computation time and greater data size processing for the CUDA version of logistic regression.
 
 \end{abstract}
 
@@ -73,116 +84,124 @@ Parallelizing Logistic Regression for Biological Experimental Design
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \section{INTRODUCTION}
 
-Logistic Regression is used as a predictive analytic in many disciplines ranging from biology and conservation to business. It models a binary dependent and one or more binary or nonbinary independent variables. This is useful in cases of observing phenomena that may occur due to a specific event. The purpose of logistic regression is to predict the occurrence of phenomena based on acquired current data. Mathematically, the binary dependent variable is either 0 or 1 and indicates the presence or absence of a certain condition, such as alive/dead or win/lose, that may be related to the independent conditions. In this paper, we are primarily concerned with the applications of binary logistic regression analysis for predictive analytics in data science, particularly for environmental science datasets. For our purpose, logistic regression is used to classify dependent variables into different groups. 
+Logistic Regression is used as a predictive analytic in many disciplines ranging from biology and conservation to business. It models a binary dependent and one or more binary or nonbinary independent variables. This is useful in cases of observing phenomena that may occur due to a specific event. The purpose of logistic regression is to predict the occurrence of phenomena based on independent conditions. The binary dependent variable is either 0 or 1 and indicates the presence or absence of a certain condition, such as alive/dead or win/lose, that may be related to the independent conditions. In this paper, we are primarily concerned with the applications of logistic regression analysis for predictive analytics in biology.
 
-Currently, there is an abundance of large datasets that are open sourced and easily accessible to the public. This is especially beneficial for scientific research. However, processing large data sets is time consuming and resource intensive for CPU in terms of memory and computation time. Sequential implementations of logistic regression require a lot of time to process smaller amounts of data and have a high memory latency. Implementation of a parallelized binary logistic regression would allow for an increased amount of data to be processed in less time and with less resource intensive computations. Logistic regression is an excellent analytic to parallelize because it primarily utilizes matrix multiplication, which has some testable characteristics to be converted to parallel code. The key point of logistic regression is  to calculate the Y parameter. The procedure to calculate the parameter Y involves matrix inversion after calculating the logit, which converts binary variables to continuous variables. In this paper, we compare a sequential implementation of binary logistic regression with a CUDA implementation, a parallelized R implementation and a multiprocessor OpenML version, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and less memory latency for CUDA versions of logistic regression, as well as parallelized R implementations.
+Currently, there is an abundance of large datasets that are open sourced and easily accessible to the public. This is especially beneficial for scientific research. However, processing large data sets is time consuming and resource intensive for CPU in terms of memory and computation time. Sequential implementations of logistic regression require a lot of time to process smaller amounts of data and have a high memory latency \cite{c2}. Implementation of a parallelized logistic regression would allow for an increased amount of data to be processed in less time. In this paper, we compare a sequential implementation of logistic regression with a CUDA implementation, looking at the relationship between dataset sizes and time taken to process the data. Our findings point to improvements in computation time and ability to process larger data sets for the CUDA implementation of logistic regression.
+
+
+
+
 
 
 \section{BACKGROUND}
 
-Logistic regression is a predictive analytic that is used to categorize data into different groups. It can be binomial, ordinal or multinomial and is based on linear regression; a logistic regression estimates a multiple linear regression function. It is the correct regression to use if there is a binary dependent variable, such as time spent studying versus whether a student passes or fails a course, or other situations depending on independent variables such as win/lose, dead/alive, yes/no, present/absent etc. Binary logistic regression is used to describe the relationship between a binary dependent variable and one or many independent variables. This predictive analytic tool is useful in data science and many other fields for predicting how likely an event will occur when certain independent factors are present. Following are the steps needed to implement a logistic regression.
+Logistic regression describes the relationship between a binary dependent variable and one or many independent variables. The regression can be binomial, ordinal or multinomial and is based on linear regression in that it estimates a multiple linear regression function. This predictive analytic tool is useful in biology, data science and many other fields for predicting the odds of an event occuring based on independent factors. Following are the steps needed to implement a logistic regression.
 
 \subsection{Linear Regression}
 In order to do a logistic regression, we must first start with a linear regression.
 
 $$Y = b_0 + b_1X_1 + b_2X_2 + b_nX_n$$
 
-In this linear model, the x’s are the predictors/independent variables and the Bn’s are the parameters of the model or the coefficients of the independent variables, with $b_0$ being a constant term. The Y value is the outcome /dependent variable and can vary from negative to positive infinity for a linear regression. 
+In this linear model, the $x_n$ are the predictors/independent variables and the $b_n$ are the parameters of the model or the coefficients of the independent variables, with $b_0$ being a constant term. The Y value is the outcome/dependent variable and can vary from negative to positive infinity for a linear regression \cite{c10} \cite{c1}. 
 
 \subsection{Logistic Function}
 The next step is to turn the linear regression into a sigmoid function, also known as a logistic function. 
 
-$$p(x) =  \frac{1}{1+e^{-x}}   =   \frac{e^x}{1+e^x} 
+$$Probability =  \frac{p(x)}{1-p(x)}   =   \frac{e^x}{1+e^x} 
 = \frac{e^{(b_0 + b_1X_1 + ... + b_nX_n)}}{1+e^{(b_0 + b_1X_1 + ... + b_nX_n)}}$$
 
-P(x) is the probability of the dependent variable equaling a success. E(Y) is the expected value of the binary dependent variable Y. X is the linear regression formula. The function is as such because the range of p(x) should be between 0 to 1, rather than -infinity to +infinity. This function provides a limited range of values for probability, so the odds of the probability must be taken next to fully convert this logistic function into a logistic regression. 
+All of these forms are equivalent and are achieved by taking the exponential of both sides. P(x) is the probability of an outcome occurring and is divided by the probability that it will not occur (1-p(x)). This allows the range of values to be between 0 and 1, rather than negative infinity to positive infinity. However, this ratio provides a limited range of values, the odds of the probability must be taken to have a more continuous range of values \cite{c10}. 
 
 \subsection{Logistic Regression} 
-The logistic regression is the natural log of the inverse of the logistic function. The core of logistic regression is estimating the log odds of an event, also known as the logit of the probability, where the log odds is a prediction of the odds of a dependent variable based on one or more binary or real valued independent predictors/x-values.
-
-The odds are determined by the inverse of the logistic function, where the probability of an outcome’s success (Y) is divided by the probability that it will not occur (1-Y). To determine the log-odds of an event occurring, we must take the natural log of this inverse. The purpose of this is to fit the logit of the probability of success with the predictors/x-values. We are then able to obtain a continuous predictor for the odds of an event happening \cite{c6}.
+The core of logistic regression is to calculate the Y parameter, which is the log odds of an event occurring based on independent factors. The log odds is also known as the logit of the probability. To determine the logit, we must take the natural log of the logistic function. The purpose of this is to fit the logit of the probability of success with the predictors/x-values. We are then able to obtain a continuous predictor for the odds of an event happening \cite{c6}.
 
 $$logit p(x) = ln[\frac{p(x)}{1-p(x)}]$$
 
-The dependent variable turns into a logit variable (the natural log of the odds of the dependent variable occurring or not). We then estimate the probability of the occurrence of a certain event based on the independent variables. The logit serves as a link between the linear regression and logistic function. The probability of success of obtaining a particular value from a binary dependent is equivalent to the odds of the dependent variable Y equaling a particular case.
+After this step, the dependent variable turns into a logit variable. We are then able to estimate the probability of the occurrence of a particular event based on the independent variables. The logit serves as a link between the linear regression and logistic function.
 
 $$ln[\frac{Y}{1-Y}] = b_0 + bX$$
 
-Logistic regression seeks to find the equation that best predicts the value of Y for each value of X. The Y variable in logistic regression is the probability of obtaining a particular value of a binary variable, whereas the Y variable in linear regression is measured directly.
+Logistic regression seeks to find the equation that best predicts the value of Y for each value of X. The procedure to calculate Y involves matrix inversion after calculating the logit, which converts binary variables to continuous variables. This is where we have parallelized the logistic function.
+
+
+
+
 
 
 \section{LITERATURE SURVEY}
-We've looked at a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regressions. The following related works are presented because they either implement a biostatistic(?) model of logistic regression or they compare sequential and parallel versions of logistic regression. 
+We've looked at a variety of papers regarding parallelizing logistic regression, as well as the applications of parallelized and sequential logistic regressions. The following related works are presented because they either implement a biostatistic model of logistic regression or they compare sequential and parallel versions of logistic regression. 
 
-\subsection{Biostatistic Logistic Regression}
-The algorithm that we have coded sequential and parallel versions of is applicable to biology and environmental studies. The work done in "Deforestation Modelling Using Logistic Regression and GIS" \cite{c1} uses logistic regression in the manner that we implement and parallelize. In their work,  Bavaghar looks at binary logistic regression, determining whether deforestation is present or not in an area based on slope as an independent variable. The setup of the experiment is similar to ours, and the work is what drove us to parallelize logistic regression for scientific fields. While a sequential version of the logistic regression is analyzed, there is no attempt to parallelize it. The data input is also far different than ours, where the focus is to use GIS with logistic regression, making comparison with this work difficult. Bavaghar analyzes digital thematic-topographic maps with 63 different data layers such as forests, ranges and gardens. Our tests read data from a file containing random input values that fall within a certain range to represent our x and b values, rather than topographic maps or open source data.
-Bavaghar
+\subsection{Biostatistic Logistic Regression Implementation}
+The algorithm that we have coded sequential and parallel versions of is applicable to biology and environmental studies. In "Deforestation Modelling Using Logistic Regression and GIS", binary logistic regression is used to determine whether deforestation is present or not in an area based on slope as an independent variable. The use of logistic regression in this paper is what prompted us to parallelize logistic regression for biological applications. While a sequential version of the logistic regression is analyzed, there is no attempt to parallelize it. The data input is also far different than ours, where the focus is to use GIS with logistic regression. Bavaghar analyzes digital thematic-topographic maps with 63 different data layers such as forests, ranges and gardens. Our tests calculate B values from a matrix of randomly generated data, making data comparison with this work not possible \cite{c1}.
+
 \subsection{Parallelizing Logistic Regression}
-Others, such as Liang, Choi et al. \cite{c2}, have parallelized the logistic regression for machine learning. They have looked at parallelized regressions in distributed platforms, parallel algorithms and sub-linear approximations. They worked with Hadoop and Spark, two distributed systems used in data science and analytics, to run sequential and parallel versions of code and compare platform/algorithm combinations with sub-linear algorithms specific to machine learning. This is clearly useful for machine learning but is not applicable to other fields that utilize logistic regression. Liang, Choi et al. focus on parallelizing machine learning algorithms, while we are looking to parallelize logistic regression itself. They used five open datasets related to machine learning to make sure that they could accurately compare their methods whereas our data is randomly generated and doesn’t come from open source. Using open datasets are beneficial because the results allow for comparability with the performance of sequential machine learning algorithms that already exist. 
+Other works have parallelized logistic regression for machine learning \cite{c2}. Liang, Choi et al. have looked at parallelized regressions in distributed platforms, parallel algorithms and sub-linear approximations. They worked with Hadoop and Spark, two distributed systems used in data science and analytics, to run sequential and parallel versions of code and compare platform/algorithm combinations with sub-linear algorithms specific to machine learning. This is clearly useful for machine learning but is not applicable to our purposes. Liang, Choi et al. focus on parallelizing machine learning algorithms that logistic regression utilizes, while we are looking to parallelize logistic regression as it applies to biology. They used five open datasets related to machine learning to make sure that they could accurately compare their methods whereas our data is randomly generated and doesn’t come from open source. Using open datasets are beneficial because the results allow for comparability with the performance of sequential machine learning algorithms that already exist. 
 
-The work done by Peretti, Alessandro, and Francesco Amenta \cite{c3} focuses on parallelizing logistic regression for the purposes of machine learning, bioinformatics and data analysis. While it is primarily a machine learning approach and our work aims to be more generalized, the parallelization is reached by using CUDA parallel programming support, which we use in our experimental design as well. However, not much detail is gone into about how CUDA is implemented, only that different CUDA software versions are compared in determining the loss function for the machine learning logistic regression. Nevertheless, this work is useful in that it this approach is applicable to bioinformatics and data analysis. The dataset used is a real dataset containing anonymized patient information obtained from the Wisconsin Diagnostic Breast Cancer database. It contains 569 instances, with each instance corresponding to a patient. This is beneficial in that the results obtained can be tested in real life, and they are. From the estimated Y values obtained per patient, there was a better chance at predicting whether a patient had breast cancer or not.  
+The work done by Peretti, Alessandro, and Francesco Amenta focuses on parallelizing logistic regression for the purposes of machine learning, bioinformatics and data analysis \cite{c3}. While it is primarily a machine learning approach and our work aims to be more generalized, the parallelization is reached by using CUDA parallel programming support, which we use in our experimental design as well. However, not much detail is gone into about how CUDA is implemented, only that different CUDA software versions are compared in determining the loss function for the machine learning logistic regression. Nevertheless, this work is useful in that it this approach is applicable to bioinformatics and data analysis. The dataset used is a real dataset containing anonymized patient information obtained from the Wisconsin Diagnostic Breast Cancer database. It contains 569 instances, with each instance corresponding to a patient. This work is beneficial because the results were acted upon, the predictor values were found to have a high level of accuracy. Given the estimated Y value obtained per patient, there was a better chance at predicting whether a patient had breast cancer or not.  
 
 
 \subsection{Implementations Used or Referenced} 
-In Evaluating Parallel Logistic Regression Models \cite{c2}, Liang, Choi et al. implement a binary logistic regression, and we reference the parallel algorithm approach, but without the distributed platform or sub-linear approximation. They analyze their experimental results in accuracy, efficiency, scalability, robustness and running time. We analyze our results in terms of accuracy and running time and use this work as a reference on how to proceed with such an analysis. 
+In Evaluating Parallel Logistic Regression Models \cite{c2}, Liang, Choi et al. implement a binary logistic regression which we reference for the parallel algorithm approach, but we don't look at distributed platforms or sub-linear approximation. They analyze their experimental results in accuracy, efficiency, scalability, robustness and running time. We analyze our results in terms of performance time and data set size but use this work as a guide on how to analyze our results. 
 
-From Bavaghar's work in Deforestation modeling using logistic regression and GIS \cite{c1}, we use a similar logistic regression and proceed with the sequential code and then the parallelized code in a step-by-step approach as well. We break down our implementation into linear regression, then logistic function and finally into logistic regression in order to code logistic regression. Bavaghar uses $R^2$ chi square test to determine the fitness of the model, which is something we consider in our work but did not have enough time to do.
+From Bavaghar's work in Deforestation modeling using logistic regression and GIS \cite{c1}, we utilize logistic regression in the same context and proceed with the sequential code and parallelized code in a step-by-step approach as well. We break down our implementation into linear regression, logistic function and finally into logistic regression using our sequential and parallel code. Bavaghar uses $R^2$ chi square test to determine the fitness of the model, which is something we considered in our work but did not have enough time to do.
+
+The main implementation that we reference are equations for a multiple regression model \cite{c9}. We use this to complete the final part of logistic regression, converting binary variables to continuous variables in order to relate logistic regression back to a linear model. We based our random data generation on Equation Set 1. 
+$$Y = X \cdot B + e$$
+The first column in our matrix contains Y values and the rest of the values are x values. We completed the majority of the logistic regression within our data generation, converting probability to the logit of the values in column 0, which is the dependent variable Y. Our programs for our sequential code and parallel code are based on Equation Set 2.
+$$B = (X' \cdot X)^{-1} X' \cdot Y$$
+This is where we transpose the matrix, compute matrix multiplication and inverse and get a parameter as output. From these parameters with are B value outputs, we can take new x values and obtain Y values that are the log odds of an event occurring for prediction. With open source data in the form of a matrix, we would be able to obtain meaningful Y values from our implementation of sequential and CUDA logistic regression.
+
+
+
 
 
 \section{PROPOSED SOLUTION}
-We aim to parallelize the logistic regression as applied to biology and data science by using CUDA. There has been a lot of research on parallelizing logistic regression for machine learning techniques and algorithms, but nothing that we’ve seen that is general enough to cover parallelized logistic regression outside of machine learning purposes. The biostatistic research that we have come across uses sequential logistic regression with other new technologies but does not attempt to parallelize the logistic regression itself. From our research, we haven’t found others who attempt to parallelize a general logistic regression using CUDA. Therefore, we propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. The purpose of this is to show that logistic regression can be parallelized and used to analyze more data in less time.
+We aim to parallelize the logistic regression using CUDA for experimental designs in biology. There has been a lot of research on parallelizing logistic regression for machine learning techniques and algorithms, but nothing that we’ve seen that is general enough to cover parallelized logistic regression outside of machine learning purposes. The biostatistic research that we have come across uses sequential logistic regression with other new technologies but does not attempt to clarify parallelizing the logistic regression itself. There is no report about how much we gain by parallelizing logistic regression, and about optimum data size and structure to overcome communication overhead between the GPU and CPU, yet. Therefore, we propose to parallelize the logistic regression in order to improve predictive behavior in a number of fields. The purpose of this project is to show that logistic regression can be parallelized to analyze more data in less time and find the optimum condition for data size and structure.
+
+
+
+
+
 
 \section{EXPERIMENTAL SETUP}
 
-\subsection{Assumptions}
-For our experiment we are implementing a binary logistic regression where our dependent variable is either 0 or 1 while our independent x variables are real numbers ranging from -3 to 3. To make sure our generated data set is valid, we followed the assumptions of data used for logistic regression applications. This involves having a binary dependent variable, not having outliers present in the data or strong correlations between independent data sets, and making sure no x values are below -3.29 or above 3.29 \cite{c8}. Another consideration we took into account is the model fit. Having more independent x variables increases the amount of variance ($R^2$) but adding too many x variables will decrease the generalizability of the predictive analytic, thus decreasing its accuracy. During our analysis we made sure not to have a very large number of columns, which represents our x variables, so that we could model prime data sets used for logistic regression. To analyze the accuracy of our logistic regression, we computed its goodness-of-fit based on the Chi square test, as well as the amount of variance $R^2$. 
-
 \subsection{Methods}
-We decided to use a matrix of random values for our input data, where the user chooses the number of rows and columns. The rows represent the number of samples that data is acquired for while the columns within each row represent the number of independent x variables. For example, rows could represent a patient and the columns could represent independent factors that may determine whether the patient has a certain illness or not. We chose this presentation of data so that we could calculate matrix multiplication and inversion for sequential and CUDA code. 
+We decided to use a matrix of random values for our input data, where the user chooses the number of rows and columns. To make sure our generated data set is valid, we follow the assumptions of data used for logistic regression applications. This involves having a binary dependent variable, not having outliers present in the data or strong correlations between independent data sets, and making sure no x values are below -3.29 or above 3.29 \cite{c8}.
 
-To code our sequential version of a logistic regression, we broke down the logistic regression as described in the background section. An array of all the x values are read in from the file and transposed into a new array. X’ and X are then multiplied together (X’X). We then calculate the inverse of the transposed X which is (-1*X') and then we perform matrix multiplication on (X’X) and (-1*X’) . The value obtained is then multiplied with Y values to produce B values. From these B values that are produced, we populate an array of new X values and combine them with the B values to give us a predicted Y value. 
+Our random data is composed of values between -3 and 3. We perform a logistic regression on the first values of each row by taking the logit, $ln[\frac{Y}{1-Y}]$, of all values in the first column, which then represents our Y values for each individual. Our rows therefore represent individuals (such as students, mice, etc) with a dependent Y and row-1 number of independent x’s. The column numbers are the number of independent x variables per row. We imagine that the Y values in our matrix are dependent on the random x values within each row, for experimental purposes. Our calculated Y values are not binary, they are meant to represent a grouping of individuals rather than a sole individual with a binary value. The purpose for this is because Toxicologists use this method for logistic regression and we want our project to match biological and environmental research. Viewing the data matrix, it can be seen that each row is presented as 
+$$ln[\frac{Y}{1-Y}] = b_0 + b_1X_1 + b_2X_2 + b_3X_3$$
+where we have one less independent x variable to account for the initial $b_0$ constant value. 
 
-For our CUDA code, we used the same logic as the sequential code but we parallelized  matrix multiplication, inverse …etc…
+With this data as an input, to complete the logistic regression and fit the logit with the x values, we have to perform a simple regression on our matrix. Because we have multiple rows representing multiple groupings, we've chosen to use a multiple regression model on our logistic regression data to complete the regression. This multiple regression model is also used in biology for multiple variables. We based our implementation off of Equation Set 2 for the multiple regression formula \cite{c9}. 
 
-Our random data is composed of values between -3 and 3 where we perform a logistic regression on the first values of each row, which then represent our Y values. Our rows therefore represent individuals (such as students, mice, etc) with a dependent Y and row-1 number of independent x’s. For our experiment, we imagine that the Y values are dependent on the x values within each row, for experimental purposes. The rows actually represent groups of individuals which is why our Y values are not binary. Toxicologists use this for logistic regression, we want our project to match biological and environmental research. 
+For our sequential and CUDA code, we transpose the input matrix, multiply it with itself and take the inverse of this result. We then multiply the new result with the original transposed matrix and multiply this with our Y values in the first column. After this regression, we obtain B values, which can then be paired with new X values to produce the Y that is the log odds of an event occurring. Our sequential code contains recursion in the methods that take the inverse of the matrix. Our CUDA code utilizes Gaussian elimination in order to avoid recursion on the GPU. 
 
-The random data has logistic regression as described in the background performed on it for the Y, the outputs are B values that are the averages of each individual/group. 
+\subsection{Machine Setup} 
 
-Our code follows the multiple regression model because this model is used in biology for multiple variable. 
+We used servers through NYU CIMS to run our sequential and parallel logistic regression programs. For the sequential program we used the snappy3 server, which is for CPU and memory intensive processes. We used the cuda2 server to run our CUDA program. Before running the programs, we ran our random data generator file to generate the appropriately sized matrix to test. We compiled the random data program and ran it with input arguments of number of rows and columns desired. From here, we compiled and ran our sequential or CUDA program with the matching row and column inputs of the data file we had generated. We used the time flag to record the time taken to compute the logistic regression of our sequential and CUDA code, and we used nvprof to profile our CUDA code. 
 
-\subsection{Machine Setup}
+\subsection{Problem Size} 
+We tested various problem sizes for sequential and CUDA programs, with the dimensions of the data matrix being much larger for CUDA than for the sequential code.  Because of the large degree of difference between the row input and column input, we don't focus too much on the size of the matrix so much as the actual dimensions. The data sizes for the sequential code range from a matrix size of 16 by 2 up to a matrix size of 100,000 by 6, where the first number is rows and the second number is columns. The size of the data matrix for the CUDA code ranges from 20 by 5 and 10 by 10 to 200,000 by 10 and 100,000 by 20. For CUDA, we tested much larger row and column numbers as well as smaller numbers to try to relate it with our sequential test sizes. We also tested dimensions greater than these ranges for both programs, but these attempts had varying successes.
 
-We used NYU linux CIMS accounts to run our sequential and parallelized logistic regression code. Before running the sequential and parallelized code, we made sure to generate the random data files that we needed to run our code with. To do this we compiled the random data program and then ran it with our specified number of rows and columns. From here, to run the parallelized code we used the cuda5 machine on the NYU prince cluster and loaded the cuda version 9.1 module. For the sequential code, we used the snappy machine on NYU’s prince cluster to obtain faster results for sequential code. We used the time flag to record time taken to compute the logistic regression of our sequential code and CUDA code, and we used nvprof to profile our CUDA code. 
-
-
-\subsection{Problem Size}
-We tested various problem sizes ranging from an input of 16 rows up to 1,000 rows for the sequential code, with column numbers increasing in multiples of 2, up until 12. 
-
-For CUDA, we tested much larger row and column numbers as well as smaller numbers to try to relate it with our sequential test sizes.
-
-our code does matrix multiplication….. the column numbers are the independent x variables that lie on the x-axis of a matrix and our row numbers represent the individuals being tested, the data points that we are trying to obtain Y values for and these values lie on the y-axis of the matrix. 
 
 
 
 \section{RESULTS AND DISCUSSION}
 
-For our results, we used time to obtain the real time our programs took to compute the B values. We took an average of 5 time values per column per row to obtain a more accurate time.
+To analyze our results, we used time to determine the sequential and CUDA program performances, as well as whether the programs were able to successfully produce correct B value outputs. The time results used to produce our figures and Table 1 are averages of five times collected per each row and column value, in order to obtain more accurate results.
 
 \subsection{Sequential Results}
-The results for our sequential code show a very small difference per change in row value (number of individuals). However, there is an increase in time with each increment of the column number, the number of independent variables, that appears to increase exponentially (Fig 1). Beyond column 12, we were unable to obtain results because time took longer than 1 hour, even when we use crunchy3 and snappy3 machines for quicker sequential computing. This limited our ability to properly compare our sequential results with our CUDA results. Differences in CUDA for column values as small as 2-12 did not provide much insight. We still obtained results for CUDA values that match sequential values. 
+The results for our sequential code show a very small difference per change in row value. However, there is an increase in time with each increment of the column number, the number of independent variables, that appears to increase exponentially (Fig 1). Beyond column 12, we were unable to obtain results because time took longer than 1 hour, even when we use crunchy3 and snappy3 machines for quicker sequential computing. This limited our ability to properly compare our sequential results with our CUDA results. Differences in CUDA for column values as small as 2-12 did not provide much insight. We still obtained results for CUDA values that match sequential values. 
 
-Figure 1 shows that the difference between row number is very small, but the difference between column numbers with a constant row number vary exponentially. In the table CITE/MAKE THIS TABLE!!! the differences of the time between columns for a constant row number are seen. Because the values of the columns varied greatly, but the values between rows stayed close, we decided not to test more rows out. The column numbers are the independent variables, the values along the x-axis of a matrix. Through our results, the more variables that are present per row, the exponentially greater time it takes to do matrix multiplication and inverse on the data matrix. We believe this is due to the recursion present in the sequential code, particularly in calculating the matrix inversion. We believe that there is little variation among row values because in calculating logistic regression multivariable logistic regression, the data samples/individuals/rows are averaged together to find a general Y value for all samples, but the inversions and high overhead operations are being performed on the independent variables, or column values. Therefore, sequential code is able to handle a large value of rows. 
+Fig 1 shows that the difference between row number is very small, but the difference between column numbers with a constant row number vary exponentially. In Table I the differences of the time between columns for a constant row number are seen. Because the values of the columns varied greatly, but the values between rows stayed close, we decided not to test more rows out. The column numbers are the number of independent variables. Through our results, the more variables that are present per row, the exponentially greater time it takes to do matrix multiplication and inverse on the data matrix. We believe this is due to the recursion present in the sequential code, particularly in calculating the matrix inversion. We believe that there is little variation among row values because in calculating logistic regression multivariable logistic regression, the data samples/individuals/rows are averaged together to find a general Y value for all samples, but the inversions and high overhead operations are being performed on the independent variables, or column values. Therefore, sequential code is able to handle a large value of rows. 
 
-We tested with row values of 10,000, 50,000 and 100,000 but received segmentation fault errors (TABLE X). However, a slow increase of time is noticed, where at row = 100,000 the time it takes to compute 2 variables per row increases by 10, compared to where row = 100. 
-
-(Make a table like sequential but for CUDA?. Scatter? with Rows = 20 and plot the columns, showing how it exponentially increases. the average of 5 times per column value. This can be a log graph?)
-
+We tested with row values of 10,000, 50,000 and 100,000 but received segmentation fault errors (Table 1). However, a slow increase of time is noticed, where at row = 100,000 the time it takes to compute 2 variables per row increases by 10, compared to where row = 100. 
 
 \subsection{CUDA Results}
 
 We checked if exponential performance difference depends on column number for our parallel code, as it does with our sequential code and found that the CUDA performance does not depend on column number up to 100 (Fig 2). So we focused on the number of rows for our CUDA code. Fig 2 shows that the column number of CUDA code up to 100 has no effect on performance. For our purposes, the number of independent variables, or column number in our project, is less than around 20 in papers for biology and environmental modeling.CITE THIS. Because of this, we checked the effect of sample numbers while the column number is limited to 20. In both column number 10 and 20, the performance of CUDA code is unstable up to 1000 and 2000. After that, the performance is almost proportional to sample or row numbers (Fig 3 and Fig 4).
 
-The nvprof for row number 1,000, 10,000, 100,000 and 200,000 is checked with column number 10 (Table 1).  The time for cuda matrix multiplication reduced proportionally with increase of row numbers from 1,000 to 200,000 and occupies over 85\%. Even in small number of rows such as 1,000, the time percentage for matrix multiplication is 99.89\%. This result indicates that our CUDA code is compute bound before the row number 200,000. 
+The nvprof for row number 1,000, 10,000, 100,000 and 200,000 is checked with column number 10 (Table 2).  The time for cuda matrix multiplication reduced proportionally with increase of row numbers from 1,000 to 200,000 and occupies over 85\%. Even in small number of rows such as 1,000, the time percentage for matrix multiplication is 99.89\%. This result indicates that our CUDA code is compute bound before the row number 200,000. 
 
 
 \subsection{Comparing Both}
@@ -194,12 +213,12 @@ Currently, we are planning to compare algorithm for matrix inversion. For sequen
 
 \section{CONCLUSIONS}
 
-Summary of what we found, why its useful, future implementations or things we'd do or change.
+The most important points of our project are listed below.
 
 \begin{itemize}
 
 \item recursive nature of logistic regression in sequential code greatly limits the time it takes to compute an increasing number of independent variables. 
-\item CUDA code gracefully handles a large input of independent variables but could be improved in number of sample size.
+\item CUDA code can handle a large number of independent variables but there could be improvements with handling extremely large sample sizes.
 \item In practical terms, biology and environmental science use around 20 independent variables at maximum.
 \item We would like to improve our CUDA code to make it more efficient in processing a larger sample size, such as a size of 1,000,000 individuals or more.
 \item We find that our CUDA code is adequate at processing large numbers of independent variables.
@@ -209,10 +228,45 @@ Summary of what we found, why its useful, future implementations or things we'd 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% ALL OF OUR FIGURES AND TABLES
 
-\begin{table}[h]
+%%%%%%%%%%%%%%%%%%%% SEQUENTIAL
+   \begin{figure}[thpb]
+      \centering
+     % \framebox{\parbox{3in} {We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
+	 %}}
+  		\includegraphics[width=\linewidth]{seqcode2.png}
+  		\label{fig:seq1}
+  		\caption{Sequential code performance for logistic regression with varying number of columns and rows. Each bar represents a different value for the row input, and all row values obtained are compared with column time values.}
+  	%}
+   \end{figure}
+%%%%%%%%%%%%%%%%%%%% CUDA col
+	\begin{figure}[thpb]
+		\centering
+		\includegraphics[width=\linewidth]{cudacolumns.png}
+		\label{fig:cudacol}
+		\caption{Performance difference of CUDA code between column number (5~20). The row number is set to 20 for all column numbers except for column = 100. The row number = 100 for column = 100.}
+	\end{figure}
+%%%%%%%%%%%%%%%%%%%% CUDA row=10
+	\begin{figure}[thpb]
+		\centering
+		\includegraphics[width=\linewidth]{cudarow10.png}
+		\label{fig:row10}
+		\caption{Performance difference of CUDA code with a constant column value of 10.}
+	\end{figure}
+%%%%%%%%%%%%%%%%%%%% CUDA row=20
+	\begin{figure}[thpb]
+		\centering
+		\includegraphics[width=\linewidth]{cudarow20.png}
+		\label{fig:row20}
+		\caption{Performance difference of CUDA code with a constant column value of 20.}
+	\end{figure}	
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{table*}[h]
 \centering
-\caption{Sequential code time results per row and column value. Time is in seconds, these results were obtained through snappy3 CIMS machine.}
-\label{seq_ex}
+%\caption{Sequential code time results per row and column value. Time is in seconds, these results were obtained through snappy3 CIMS machine.}
+%\label{sequential}
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|c|c|c|c|c|}
 \hline
@@ -231,14 +285,14 @@ Col & Row = 16 & Row = 20 & Row = 50 & Row = 100 & Row = 500 & Row = 1000 & Row 
 12 & 397.905 & 395.137 & 396.281 & 396.541 & 395.702 & 395.609 & NAN & NAN & NAN \\
 \hline
 \end{tabular}
+\caption{Sequential code time results per row and column value. Time is in seconds, these results were obtained through snappy3 CIMS machine.}
+\label{sequential}
 \end{center}
-\end{table}
+\end{table*}
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-\begin{table}[h]
+\begin{table*}[h]
 \centering
-\caption{Time(percentage) of Profiling result from nvprof. The column number is set to 10}
-\label{seq_ex}
 \begin{center}
 \begin{tabular}{|c|c|c|c|c|}
 \hline
@@ -251,40 +305,10 @@ CUDA memcpy DtoD & 0.04 & 0.33 & 5.32 & 8.42 \\
 CUDA memcpy HtoD & 0.03 & 0.08 & 3.78 & 5.55 \\
 \hline
 \end{tabular}
+\caption{Time(percentage) of Profiling result from nvprof. The column number is set to 10}
+\label{cudaprof}
 \end{center}
-\end{table}
-
-
-   \begin{figure}[thpb]
-      \centering
-     % \framebox{\parbox{3in} {We suggest that you use a text box to insert a graphic (which is ideally a 300 dpi TIFF or EPS file, with all fonts embedded) because, in an document, this method is somewhat more stable than directly inserting a picture.
-	 %}}
-  		\includegraphics[width=\linewidth]{seqcode2.png}
-  		\label{fig:seq1}
-  		\caption{Sequential code performance for logistic regression with varying number of columns and rows. Each bar represents a different value for the row input, and all row values obtained are compared with column time values.}
-  	%}
-   \end{figure}
-
-	\begin{figure}[thpb]
-		\centering
-		\includegraphics[width=\linewidth]{cudacolumns.png}
-		\label{fig:cudacol}
-		\caption{Performance difference of CUDA code between column number (5~20). The row number is set to 20 for all column numbers except for column = 100. The row number = 100 for column = 100.}
-	\end{figure}
-
-	\begin{figure}[thpb]
-		\centering
-		\includegraphics[width=\linewidth]{cudarow10.png}
-		\label{fig:row10}
-		\caption{Performance difference of CUDA code with a constant column value of 10.}
-	\end{figure}
-
-	\begin{figure}[thpb]
-		\centering
-		\includegraphics[width=\linewidth]{cudarow20.png}
-		\label{fig:row20}
-		\caption{Performance difference of CUDA code with a constant column value of 20.}
-	\end{figure}	
+\end{table*}
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
@@ -295,26 +319,19 @@ CUDA memcpy HtoD & 0.03 & 0.08 & 3.78 & 5.55 \\
                                   % so it should come on the page before the last. Make
                                   % sure that you do not shorten the textheight too much.
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %\section*{APPENDIX}
 
 %Appendixes should appear before the acknowledgment.
 
 \section*{ACKNOWLEDGMENT}
 
-Thank you Professor Zahran for all your help.
+Thank you Professor Zahran for an excellent semester and for all your help.
 
 \begin{thebibliography}{99}
 
 %%%%%Chicago citation style
+\bibitem{c9} Anthony. VBA9 - Multiple Regression Model. Accessed November 02, 2018. http://www.anthony-vba.kefra.com/vba/vba9.htm.
 
 \bibitem{c1} Bavaghar, M. Pir. "Deforestation Modelling Using Logistic Regression and GIS." Journal of Forest Science 61, no. No. 5 (2016): 193-99. 
 
@@ -324,6 +341,8 @@ Thank you Professor Zahran for all your help.
 
 \bibitem{c4} Salame, Camil Wadih, Joaquim Carlos Barbosa Queiroz, Gilberto De Miranda Rocha, Mario Miguel Amin, and Edson Paulino Da Rocha. "Use of Spatial Regression Models in the Analysis of Burnings and Deforestation Occurrences in Forest Region, Amazon, Brazil." Environmental Earth Sciences 75, no. 3 (2016). 
 
+\bibitem{c10} Schoonjans, Frank. "Logistic Regression." MedCalc. November 09, 2018. Accessed December 05, 2018. https://www.medcalc.org/manual/logistic\_regression.php.
+
 \bibitem{c5} Singh, Sameer, Jeremy Kubica, Scott Larsen, and Daria Sorokina. "Parallel Large Scale Feature Selection for Logistic Regression." Proceedings of the 2009 SIAM International Conference on Data Mining, 2009, 1172-183. 
 
 \bibitem{c6} Sperandei, Sandro. "Understanding Logistic Regression Analysis." Biochemia Medica, 2014, 12-18.
@@ -331,33 +350,6 @@ Thank you Professor Zahran for all your help.
 \bibitem{c7} Van, Phu Nguyen, and Théophile Azomahou. "Nonlinearities and Heterogeneity in Environmental Quality: An Empirical Analysis of Deforestation." Journal of Development Economics 84, no. 1 (2007): 291-309. 
 
 \bibitem{c8} "What Is Logistic Regression?" Statistics Solutions. Accessed December 05, 2018. https://www.statisticssolutions.com/what-is-logistic-regression/.
-
-
-
-%%APA citation
-%\bibitem{c1} Bavaghar, M. P. (2016). Deforestation modelling using logistic regression and GIS. Journal of Forest Science, 61(No. 5), 193-199.
-
-%\bibitem{c2} Peng, H., Liang, D., & Choi, C. (2013). Evaluating parallel logistic regression models. 2013 IEEE International Conference on Big Data. 
-
-%\bibitem{c3} Peretti, A., & Amenta, F. (2016). Breast Cancer Prediction by Logistic Regression with CUDA Parallel Programming Support. Breast Cancer: Current Research, 01(03).
-
-%\bibitem{c4} Salame, C. W., Queiroz, J. C., Rocha, G. D., Amin, M. M., & Rocha, E. P. (2016). Use of spatial regression models in the analysis of burnings and deforestation occurrences in forest region, Amazon, Brazil. Environmental Earth Sciences, 75(3).
-
-%\bibitem{c5} Singh, S., Kubica, J., Larsen, S., & Sorokina, D. (2009). Parallel Large Scale Feature Selection for Logistic Regression. Proceedings of the 2009 SIAM International Conference on Data Mining, 1172-1183. 
-
-%\bibitem{c6} Sperandei, S. (2014). Understanding logistic regression analysis. Biochemia Medica, 12-18.
-
-%\bibitem{c7} Van, P. N., & Azomahou, T. (2007). Nonlinearities and heterogeneity in environmental quality: An empirical analysis of deforestation. Journal of Development Economics, 84(1), 291-309. 
-
-%%%%%%%%%%%%%%%%%% default examples
-%\bibitem{c1} G. O. Young, ÒSynthetic structure of industrial plastics (Book style with paper title and editor),Ó 	in Plastics, 2nd ed. vol. 3, J. Peters, Ed.  New York: McGraw-Hill, 1964, pp. 1564.
-%\bibitem{c2} W.-K. Chen, Linear Networks and Systems (Book style).	Belmont, CA: Wadsworth, 1993, pp. 123Ð135.
-%\bibitem{c3} H. Poor, An Introduction to Signal Detection and Estimation.   New York: Springer-Verlag, 1985, ch. 4.
-%\bibitem{c4} B. Smith, ÒAn approach to graphs of linear forms (Unpublished work style),Ó unpublished.
-%\bibitem{c5} E. H. Miller, ÒA note on reflector arrays (Periodical styleÑAccepted for publication),Ó IEEE Trans. Antennas Propagat., to be publised.
-%\bibitem{c6} J. Wang, ÒFundamentals of erbium-doped fiber amplifiers arrays (Periodical styleÑSubmitted for publication),Ó IEEE J. Quantum Electron., submitted for publication.
-%\bibitem{c7} C. J. Kaufman, Rocky Mountain Research Lab., Boulder, CO, private communication, May 1995.
-
 
 \end{thebibliography}
 
